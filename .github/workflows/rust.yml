@@ -27,12 +27,12 @@ jobs:
     - name: Build
       run: |
         cargo build --verbose
-        ls
-      
+        ls target/debug
+
     - name: Run tests
       run: |
         cargo test --verbose
-        ls target/debug
+        ls coverage
     
     - name: Get Coverage Report
       run: |
