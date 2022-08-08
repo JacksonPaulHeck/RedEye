@@ -57,16 +57,18 @@ impl Token {
         };
     }
 
+    // Getter and Setter for token_type
     pub fn get_type(&self) -> &TokenType {
         return &self.token_type;
     }
 
-    pub fn get_data(&self) -> &String {
-        return &self.data;
-    }
-
     pub fn set_type(&mut self, token_type: TokenType) {
         self.token_type = token_type;
+    }
+
+    // Getter and Setter for data
+    pub fn get_data(&self) -> &String {
+        return &self.data;
     }
 
     pub fn set_data(&mut self, data: String) {
