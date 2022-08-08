@@ -1,4 +1,5 @@
-enum TokenType {
+#[derive(Debug, PartialEq)]
+pub enum TokenType {
     OpenParen,
     CloseParen,
     OpenBrace,
@@ -43,7 +44,24 @@ enum TokenType {
     Error,
 }
 
-struct Token {
+pub struct Token {
     token_type: TokenType,
     data: String,
+}
+
+impl Token {
+    pub fn create(token_type: TokenType, data: String) -> Self {
+        return Token {
+            token_type: token_type,
+            data: data,
+        };
+    }
+
+    pub fn get_type(&self) -> &TokenType {
+        return &self.token_type;
+    }
+
+    pub fn get_data(&self) -> &String {
+        return &self.data;
+    }
 }

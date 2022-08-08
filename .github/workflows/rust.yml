@@ -35,6 +35,14 @@ jobs:
         cargo test --verbose
         ls coverage
     
+    - name: Run tests
+      run: |
+        export RUSTFLAGS="-C instrument-coverage"
+        mkdir coverage
+        export LLVM_PROFILE_FILE="coverage/default.profraw"
+        cargo run --verbose
+        ls coverage
+    
     - name: Get Coverage Report
       run: |
         grcov . --binary-path ./target/debug/red_eye -s . -t html --branch --ignore-not-existing -o ./coverage/

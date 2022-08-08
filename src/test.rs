@@ -1,14 +1,15 @@
-use crate::Token;
-use crate::TokenType;
 #[cfg(test)]
 mod tests {
     #[test]
+    fn test_print() {
+        crate::print();
+    }
+    #[test]
     fn test_token() {
-        let token = Token {
-            token_type: TokenType::Eof,
-            data: String::from(""),
-        };
-        assert_eq!(token.get_type(), TokenType::Eof);
-        assert_eq!(token.data(), String::from(""));
+        use crate::Token;
+        use crate::TokenType;
+        let token = Token::create(TokenType::Eof, String::from(""));
+        assert_eq!(token.get_type(), &TokenType::Eof);
+        assert_eq!(token.get_data(), &String::from(""));
     }
 }
