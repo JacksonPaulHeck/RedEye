@@ -17,7 +17,7 @@ jobs:
     
     - name: Environment Setup
       run: |
-        sudo apt install grcov
+        sudo apt-get install grcov
         export RUSTFLAGS="-C instrument-coverage"
         mkdir coverage
         export LLVM_PROFILE_FILE="coverage/default.profraw"
