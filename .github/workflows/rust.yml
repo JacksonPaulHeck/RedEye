@@ -32,11 +32,11 @@ jobs:
     - name: Run tests
       run: |
         cargo test --verbose
-        ls target
+        ls target/debug
     
     - name: Get Coverage Report
       run: |
-        grcov . --binary-path ./target/debug/ -s . -t html --branch --ignore-not-existing -o ./coverage/
+        grcov . --binary-path ./target/debug/red_eye -s . -t html --branch --ignore-not-existing -o ./coverage/
         
     - name: Copy output files to artifact directory
       run: |
