@@ -17,6 +17,7 @@ jobs:
     
     - name: Environment Setup
       run: |
+        rustup default nightly
         rustup component add llvm-tools-preview
         cargo install grcov
         export RUSTFLAGS="-C instrument-coverage"
