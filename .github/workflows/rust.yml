@@ -18,23 +18,27 @@ jobs:
     - name: Environment Setup
       run: |
         rustup default nightly
-        rustup component add llvm-tools-preview
         cargo install grcov
+        rustup component add llvm-tools-preview
         export RUSTFLAGS="-C instrument-coverage"
         mkdir coverage
         export LLVM_PROFILE_FILE="coverage/default.profraw"
         
     - name: Build
-      run: cargo build --verbose
+      run: |
+        cargo build --verbose
+        ls
       
     - name: Run tests
-      run: cargo test --verbose
+      run: |
+        cargo test --verbose
+        ls
     
     - name: Get Coverage Report
       run: |
-        ls */*
         grcov . --binary-path target/debug/ -s . -t html --branch --ignore-not-existing -o ./coverage/
-    
+        ls
+        
     - name: Copy output files to artifact directory
       run: |
         mkdir artifacts
