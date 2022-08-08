@@ -14,7 +14,35 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
+    
+    - name: Environment Setup
+      run: |
+        sudo apt install grcov
+        export RUSTFLAGS="-C instrument-coverage"
+        mkdir coverage
+        export LLVM_PROFILE_FILE="coverage/default.profraw"
+        
     - name: Build
       run: cargo build --verbose
+      
     - name: Run tests
       run: cargo test --verbose
+    
+    - name: Get Coverage Report
+      run: grcov . --binary-path target/debug/ -s . -t html --branch --ignore-not-existing -o ./coverage/
+    
+    - name: Copy output files to artifact directory
+      run: |
+        mkdir artifacts
+        for f in coverage/*
+        do
+          echo "  Copying $f"
+          cp $f artifacts/
+        done
+    - name: Upload output files to GitHub so they can be reviewed
+      uses: actions/upload-artifact@v1
+      with:
+        name: coverage_report
+        path: artifacts
+      
+      
