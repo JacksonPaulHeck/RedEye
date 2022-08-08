@@ -46,7 +46,7 @@ jobs:
         for f in coverage/*
         do
           echo "  Copying $f"
-          cp $f artifacts/
+          cp -r -v $f artifacts/
         done
     - name: Upload output files to GitHub so they can be reviewed
       uses: actions/upload-artifact@v1
