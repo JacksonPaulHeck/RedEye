@@ -20,17 +20,19 @@ jobs:
         rustup default nightly
         cargo install grcov
         rustup component add llvm-tools-preview
-        export RUSTFLAGS="-C instrument-coverage"
-        mkdir coverage
-        export LLVM_PROFILE_FILE="coverage/default.profraw"
+       
         
     - name: Build
       run: |
+        export RUSTFLAGS="-C instrument-coverage"
         cargo build --verbose
         ls target/debug
 
     - name: Run tests
       run: |
+        export RUSTFLAGS="-C instrument-coverage"
+        mkdir coverage
+        export LLVM_PROFILE_FILE="coverage/default.profraw"
         cargo test --verbose
         ls coverage
     
