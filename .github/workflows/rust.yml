@@ -25,32 +25,22 @@ jobs:
       run: |
         export RUSTFLAGS="-C instrument-coverage"
         cargo build --verbose
-        ls target/debug
 
     - name: Run tests
       run: |
         export RUSTFLAGS="-C instrument-coverage"
-        mkdir coverage
-        export LLVM_PROFILE_FILE="coverage/default.profraw"
+        mkdir ./target/debug/coverage
+        export LLVM_PROFILE_FILE="./target/debug/coverage/default.profraw"
         cargo test --verbose
-        ls coverage
-    
-    - name: Run tests
-      run: |
-        export RUSTFLAGS="-C instrument-coverage"
-        mkdir coverage
-        export LLVM_PROFILE_FILE="coverage/default.profraw"
-        cargo run --verbose
-        ls coverage
     
     - name: Get Coverage Report
       run: |
-        grcov . --binary-path ./target/debug/red_eye -s . -t html --branch --ignore-not-existing -o ./coverage/
+        grcov . --binary-path ./target/debug/deps -s . -t html --branch --ignore-not-existing -o ./target/debug/coverage/
         
     - name: Copy output files to artifact directory
       run: |
         mkdir artifacts
-        for f in coverage/*
+        for f in ./target/debug/coverage/*
         do
           echo "  Copying $f"
           cp -r -v $f artifacts/
