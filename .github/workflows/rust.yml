@@ -21,7 +21,6 @@ jobs:
         cargo install grcov
         rustup component add llvm-tools-preview
        
-        
     - name: Build
       run: |
         export RUSTFLAGS="-C instrument-coverage"
