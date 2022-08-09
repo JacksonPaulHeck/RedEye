@@ -17,7 +17,6 @@ impl<T: Iterator<Item = char>> Iterator for Lexer<T> {
 
     fn next(&mut self) -> Option<token::Token> {
         while let Some(_) = self.chars.next_if(|x| x.is_whitespace()) {}
-
         if let Some(x) = self.chars.next() {
             let mut text = String::new();
             let mut string = String::new();
@@ -86,7 +85,7 @@ impl<T: Iterator<Item = char>> Iterator for Lexer<T> {
                         Some(token::Token::create(token::TokenType::Number, text))
                     } else {
                         if !x.is_alphanumeric() {
-                            todo!("X: {}", x);
+                            return None;
                         }
 
                         while let Some(x) = self.chars.next_if(|x| x.is_alphanumeric() || *x == '_')
@@ -107,14 +106,13 @@ impl<T: Iterator<Item = char>> Iterator for Lexer<T> {
                             "str" => Some(token::Token::create(token::TokenType::Str, text)),
                             "print" => Some(token::Token::create(token::TokenType::Print, text)),
                             "return" => Some(token::Token::create(token::TokenType::Return, text)),
-
                             _ => Some(token::Token::create(token::TokenType::Identifier, text)),
                         }
                     }
                 }
             }
         } else {
-            None
+            return None;
         }
     }
 }
