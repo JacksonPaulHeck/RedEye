@@ -1,8 +1,9 @@
 mod args;
+mod lex;
 mod test;
 mod token;
 
-fn repl(args: args::Args) -> i32 {
+fn repl(_args: args::Args) -> i32 {
     loop {
         let mut line = String::new();
         print!("-> ");
@@ -58,16 +59,22 @@ fn run_file(args: args::Args) -> i32 {
                     Ok(_) => {
                         println!("TODO");
                         return 0;
+                    }
+                    Err(e) => {
+                        eprintln!("{e:#?}");
+                        return 101;
                     },
-                    Err(e) => todo!(),
                 }
             }
-            Err(e) => todo!(),
+            Err(e) => {
+                eprintln!("{e:#?}");
+                return 101;
+            },
         },
         None => {
             eprintln!("Unreachable");
             return 101;
-        },
+        }
     }
 }
 
