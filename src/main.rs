@@ -5,61 +5,138 @@ mod parse;
 mod test;
 mod token;
 
-fn repl(_args: args::Args) -> i32 {
-    loop {
-        let mut line = String::new();
-        print!("-> ");
-        use std::io::Write;
-        let mut flush_result: Result<(), std::io::Error> = std::io::stdout().flush();
-        let mut read_result: Result<usize, std::io::Error> = std::io::stdin().read_line(&mut line);
+const SUCCESS: i32 = 0;
+const CONTINUE: i32 = -1;
+const ERROR: i32 = 101;
 
-        if line.trim().chars().last().unwrap() == '{' {
-            loop {
-                print!(".");
-                let mut line_inner = String::new();
-                flush_result = std::io::stdout().flush();
-                read_result = std::io::stdin().read_line(&mut line_inner);
-                line = line + &line_inner;
-                if line_inner.chars().nth(0).unwrap() == '}' {
-                    break;
+fn run_line(
+    args: &args::Args,
+    line: String,
+    flush_result: Result<(), std::io::Error>,
+    read_result: Result<usize, std::io::Error>,
+) -> i32 {
+    let mut parser: parse::Parser = parse::Parser::new();
+    match flush_result {
+        Ok(_) => match read_result {
+            Ok(line_length) => {
+                if line == ".quit\n" {
+                    println!("Exited!");
+                    return SUCCESS;
+                } else if line_length > 0 {
+                    let lexer = lex::Lexer::from_iter(line.chars());
+                    for token in lexer {
+                        parser.push_token(token);
+                    }
+                    parser.parse(&args);
+                    for _ast in parser.get_ast_nodes() {
+                        todo!();
+                    }
+                    parser.set_tokens(Vec::<token::Token>::new());
+                    return CONTINUE;
+                } else {
+                    eprintln!("Invalid Input");
+                    return ERROR;
                 }
             }
-        }
-        match flush_result {
-            Ok(_) => match read_result {
-                Ok(line_length) => {
-                    if line == ".quit\n" {
-                        println!("Exited!");
-                        return 0;
-                    } else if line_length > 0 {
-                        let lexer = lex::Lexer::from_iter(line.chars());
-                        for token in lexer {
-                            todo!();
-                        }
-                        todo!();
-                    } else {
-                        eprintln!("Invalid Input");
-                        return 101;
-                    }
-                }
-                Err(e) => {
-                    eprintln!("{e:?}");
-                    return 101;
-                }
-            },
             Err(e) => {
                 eprintln!("{e:?}");
-                return 101;
+                return ERROR;
             }
+        },
+        Err(e) => {
+            eprintln!("{e:?}");
+            return ERROR;
         }
     }
 }
 
+fn get_line(
+    mut line: String,
+    mut flush_result: Result<(), std::io::Error>,
+    mut read_result: Result<usize, std::io::Error>,
+    output: &mut dyn std::io::Write,
+    input: &mut dyn std::io::Read,
+) -> (
+    String,
+    Result<(), std::io::Error>,
+    Result<usize, std::io::Error>,
+) {
+    use std::io::BufRead;
+    let mut in_buffer = std::io::BufReader::new(&mut *input);
+    match line.trim().chars().last() {
+        Some(x) => {
+            if x == '{' {
+                loop {
+                    print!(".");
+                    let mut line_inner = String::new();
+                    flush_result = output.flush();
+                    read_result = in_buffer.read_line(&mut line_inner);
+                    line = line + &line_inner;
+                    if line_inner.chars().nth(0).unwrap() == '}'{
+                        break;
+                    }
+                }
+            }
+            return (line, flush_result, read_result);
+        }
+        None => return (line, flush_result, read_result),
+    }
+}
+
+fn repl(
+    args: args::Args,     
+    output: &mut dyn std::io::Write,
+    input: &mut dyn std::io::Read
+) -> i32 {
+    let mut result;
+    use std::io::BufRead;
+    let mut in_buffer = std::io::BufReader::new(input);
+    loop {
+        let mut line = String::new();
+        print!("-> ");
+        use std::io::Write;
+        let mut flush_result: Result<(), std::io::Error> = output.flush();
+        let mut read_result: Result<usize, std::io::Error> = in_buffer.read_line(&mut line);
+        (line, flush_result, read_result) = get_line(
+            line.clone(),
+            flush_result,
+            read_result,
+            output,
+            &mut in_buffer,
+        );
+        result = run_line(&args, line, flush_result, read_result);
+        if result != -1 {
+            break;
+        }
+    }
+    return result;
+}
+
+fn run_interpret(parser: parse::Parser) -> i32 {
+    for ast_node in parser.get_ast_nodes() {
+        match ast_node.get_type() {
+            ast::ASTNodeType::Function | ast::ASTNodeType::Declaration => {
+                println!("TODO");
+                return SUCCESS;
+            }
+            _ => match ast_node.get_operation() {
+                Some(_) => {
+                    eprintln!("Cannot call functions outside of entry");
+                    return ERROR;
+                }
+                None => {
+                    eprintln!("TODO");
+                    return ERROR;
+                }
+            },
+        }
+    }
+    return SUCCESS;
+}
+
 fn run_file(args: args::Args) -> i32 {
     use std::io::Read;
-    const SUCCESS: i32 = 0;
-    const ERROR: i32 = 101;
-    let mut result = 0;
+    let mut result;
 
     match args.get_input_file() {
         Some(input) => match std::fs::File::open(input) {
@@ -83,49 +160,35 @@ fn run_file(args: args::Args) -> i32 {
                         result = parser.parse(&args);
 
                         // Check for Parse Errror
-                        if result != 0 {
+                        if result != SUCCESS {
                             eprintln!("Error in Parser");
                             return result;
                         }
 
                         if *args.get_interpret() {
-                            for ast_node in parser.get_ast_nodes() {
-                                match ast_node.get_type() {
-                                    ast::ASTNodeType::Function | ast::ASTNodeType::Declaration => {
-                                        todo!();
-                                    }
-                                    _ => match ast_node.get_operation() {
-                                        Some(operation) => {
-                                            eprintln!("Cannot call functions outside of entry");
-                                            return ERROR;
-                                        }
-                                        None => todo!(),
-                                    },
-                                }
-                            }
+                            result = run_interpret(parser);
                         }
                     }
                     Err(e) => {
                         eprintln!("{e:#?}");
-                        result = 101;
+                        result = ERROR;
                     }
                 }
             }
             Err(e) => {
                 eprintln!("{e:#?}");
-                result = 101;
+                result = ERROR;
             }
         },
         None => {
             eprintln!("Unreachable");
-            result = 101;
+            result = ERROR;
         }
     }
     return result;
 }
 
-fn main() {
-    let arguments: Vec<String> = std::env::args().collect();
+fn get_args(arguments: Vec<String>) -> args::Args {
     let mut args = args::Args::create(None, false, false, false, false, false);
     for argument in 1..arguments.len() {
         match arguments[argument].as_str() {
@@ -142,9 +205,14 @@ fn main() {
             _ => args.set_input_file(Some(String::from(&arguments[argument]))),
         }
     }
+    return args;
+}
 
+fn main() {
+    let arguments: Vec<String> = std::env::args().collect();
+    let args = get_args(arguments);
     match args.get_input_file() {
         Some(_) => std::process::exit(run_file(args)),
-        None => std::process::exit(repl(args)),
+        None => std::process::exit(repl(args, &mut std::io::stdout(), &mut std::io::stdin())),
     }
 }

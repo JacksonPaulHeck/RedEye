@@ -1,6 +1,8 @@
 use crate::args;
 use crate::ast;
 use crate::token;
+use crate::ERROR;
+use crate::SUCCESS;
 
 pub struct Parser {
     ast_nodes: Vec<ast::ASTNode>,
@@ -53,7 +55,12 @@ impl Parser {
     }
 
     // Main parse function
-    pub fn parse(&self, args: &args::Args) -> i32 {
-        return 0;
+    pub fn parse(&self, _args: &args::Args) -> i32 {
+        for token in self.get_tokens() {
+            if *token.get_type() == token::TokenType::Error {
+                return ERROR;
+            }
+        }
+        return SUCCESS;
     }
 }

@@ -106,6 +106,7 @@ impl<T: Iterator<Item = char>> Iterator for Lexer<T> {
                             "str" => Some(token::Token::create(token::TokenType::Str, text)),
                             "print" => Some(token::Token::create(token::TokenType::Print, text)),
                             "return" => Some(token::Token::create(token::TokenType::Return, text)),
+                            "error" => Some(token::Token::create(token::TokenType::Error, text)),
                             _ => Some(token::Token::create(token::TokenType::Identifier, text)),
                         }
                     }

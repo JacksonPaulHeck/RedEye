@@ -1,3 +1,4 @@
+#[derive(Debug, PartialEq)]
 pub struct Args {
     input_file: Option<String>,
     dot: bool,
