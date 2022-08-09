@@ -61,7 +61,6 @@ fn run_file(args: args::Args) -> i32 {
     const ERROR: i32 = 101;
     let mut result = 0;
 
-
     match args.get_input_file() {
         Some(input) => match std::fs::File::open(input) {
             Ok(mut input_file) => {
@@ -82,7 +81,7 @@ fn run_file(args: args::Args) -> i32 {
                         ));
 
                         result = parser.parse(&args);
-                        
+
                         // Check for Parse Errror
                         if result != 0 {
                             eprintln!("Error in Parser");
@@ -94,18 +93,18 @@ fn run_file(args: args::Args) -> i32 {
                                 match ast_node.get_type() {
                                     ast::ASTNodeType::Function | ast::ASTNodeType::Declaration => {
                                         todo!();
-                                    },
+                                    }
                                     _ => match ast_node.get_operation() {
                                         Some(operation) => {
                                             eprintln!("Cannot call functions outside of entry");
                                             return ERROR;
-                                        },
+                                        }
                                         None => todo!(),
-                                    }
+                                    },
                                 }
                             }
                         }
-                    },
+                    }
                     Err(e) => {
                         eprintln!("{e:#?}");
                         result = 101;

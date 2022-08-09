@@ -31,14 +31,18 @@ impl ASTNode {
                 write!(output_file, "Node{}", layer).expect("Unable to write to file");
                 for i in 0..self.children.len() {
                     match &self.children[i] {
-                        Some(child) => match output_file.try_clone() {
-                            Ok(out_file) => {
-                                writeln!(output_file, " -> Node{}", layer)
-                                    .expect("Unable to write to file");
-                                child.print(layer + 1, Some(out_file))
-                            }
-                            Err(e) => eprintln!("Unable to clone file: examples/ast.dot {e:#?}"),
-                        },
+                        Some(child) => {
+                            writeln!(output_file, " -> Node{}", layer)
+                                .expect("Unable to write to file");
+                            child.print(
+                                layer + 1,
+                                Some(
+                                    output_file
+                                        .try_clone()
+                                        .expect("Unable to clone file: examples/ast.dot {e:#?}"),
+                                ),
+                            )
+                        }
                         None => {
                             println!("TODO: Write Error Message");
                         }

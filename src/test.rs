@@ -143,6 +143,7 @@ mod tests {
         assert_eq!(args.get_run(), &true);
     }
 
+    #[ignore]
     #[test]
     fn test_run_file() {
         use crate::args::Args;
@@ -322,5 +323,45 @@ mod tests {
 
         // Testing Debug for Code Coverage
         println!("{:#?}", ast_node);
+    }
+
+    #[test]
+    fn test_parse() {
+        use crate::args::Args;
+        use crate::ast::ASTNode;
+        use crate::ast::ASTNodeType;
+        use crate::parse::Parser;
+        use crate::token::Token;
+        use crate::token::TokenType;
+
+        // Construct Parser
+        let mut parser: Parser = Parser::new();
+        let mut ast_node = ASTNode::create(Vec::new(), None, ASTNodeType::Empty);
+        let mut ast_node_push = ASTNode::create(Vec::new(), None, ASTNodeType::Empty);
+        let args = Args::create(None, false, false, false, false, false);
+
+        // Test Getters
+        assert_eq!(parser.get_ast_nodes().len(), 0);
+        assert_eq!(*parser.get_current_node(), 0);
+        assert_eq!(parser.get_tokens().len(), 0);
+
+        parser.set_ast_nodes(vec![ast_node]);
+        parser.set_current_node(1);
+        parser.set_tokens(vec![Token::create(TokenType::Eof, String::from(""))]);
+
+        // Test Setters
+        assert_eq!(parser.get_ast_nodes().len(), 1);
+        assert_eq!(*parser.get_current_node(), 1);
+        assert_eq!(parser.get_tokens().len(), 1);
+
+        // Test Push Functions
+        parser.push_ast_node(ast_node_push);
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+
+        assert_eq!(parser.get_ast_nodes().len(), 2);
+        assert_eq!(parser.get_tokens().len(), 2);
+
+        // Test Parse Function
+        assert_eq!(parser.parse(&args), 0);
     }
 }
