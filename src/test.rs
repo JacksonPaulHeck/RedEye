@@ -149,8 +149,15 @@ mod tests {
         use crate::run_file;
         let args = Args::create(None, false, false, false, false, false);
         run_file(args);
-        
-        let args = Args::create(Some(String::from("examples/test.night")), false, false, false, false, false);
+
+        let args = Args::create(
+            Some(String::from("examples/test.night")),
+            false,
+            false,
+            false,
+            false,
+            false,
+        );
         run_file(args);
     }
 
@@ -168,5 +175,72 @@ mod tests {
     fn integration_test() {
         use crate::main;
         main();
+    }
+
+    #[test]
+    fn test_lexer() {
+        use crate::lex::Lexer;
+        use crate::token::Token;
+        use crate::token::TokenType;
+
+        let contents = String::from("funct entry(){return(0);}");
+        let lexer = Lexer::from_iter(contents.chars());
+        let mut tokens = Vec::new();
+
+        for token in lexer {
+            tokens.push(token);
+        }
+
+        assert_eq!(
+            Vec::from([
+                Token::create( 
+                    TokenType::Funct,
+                    String::from("funct")
+                ), 
+                Token::create( 
+                    TokenType::Identifier,
+                    String::from("entry")
+                ),
+                Token::create( 
+                    TokenType::OpenParen,
+                    String::from("(")
+                ),
+                Token::create( 
+                    TokenType::CloseParen,
+                    String::from(")")
+                ),
+                Token::create( 
+                    TokenType::OpenBrace,
+                    String::from("{")
+                ),
+                Token::create( 
+                    TokenType::Return,
+                    String::from("return")
+                ),
+                Token::create( 
+                    TokenType::OpenParen,
+                    String::from("(")
+                ),
+                Token::create( 
+                    TokenType::Number,
+                    String::from("0")
+                ),
+                Token::create( 
+                    TokenType::CloseParen,
+                    String::from(")")
+                ),
+                Token::create( 
+                    TokenType::Semicolon,
+                    String::from(";")
+                ),
+                Token::create( 
+                    TokenType::CloseBrace,
+                    String::from("}")
+                ),
+            ]
+            ),
+            tokens
+
+        );
     }
 }

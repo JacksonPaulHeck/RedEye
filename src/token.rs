@@ -44,6 +44,7 @@ pub enum TokenType {
     Error,
 }
 
+#[derive(Debug, PartialEq)]
 pub struct Token {
     token_type: TokenType,
     data: String,

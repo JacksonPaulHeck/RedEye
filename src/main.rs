@@ -1,4 +1,5 @@
 mod args;
+mod lex;
 mod test;
 mod token;
 
@@ -58,7 +59,7 @@ fn run_file(args: args::Args) -> i32 {
                     Ok(_) => {
                         println!("TODO");
                         return 0;
-                    },
+                    }
                     Err(e) => todo!(),
                 }
             }
@@ -67,7 +68,7 @@ fn run_file(args: args::Args) -> i32 {
         None => {
             eprintln!("Unreachable");
             return 101;
-        },
+        }
     }
 }
 
