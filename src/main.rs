@@ -1,4 +1,5 @@
 mod args;
+mod ast;
 mod lex;
 mod test;
 mod token;
