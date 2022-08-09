@@ -273,4 +273,52 @@ mod tests {
         
         assert_eq!(Vec::<Token>::new(), tokens);
     }
+
+    #[test]
+    fn test_ast(){        
+        use crate::token::Token;
+        use crate::token::TokenType;
+        use crate::ast::ASTNode;
+        use crate::ast::ASTNodeType;
+        use crate::ast::ChildNode;
+
+        // Construct ASTNode
+        let mut ast_node = ASTNode::create(Vec::new(), None, ASTNodeType::Empty);
+        let child_node = ASTNode::create(Vec::new(), None, ASTNodeType::Empty);
+
+        // Testing Getters
+        assert_eq!(ast_node.get_children().len(), 0);
+        assert_eq!(*ast_node.get_operation(), None);
+        assert_eq!(*ast_node.get_type(), ASTNodeType::Empty);
+
+        // Testing Setters
+        ast_node.set_children(vec![Some(Box::new(child_node))]);
+        ast_node.set_operation(Some(Token::create(TokenType::Eof, String::from(""))));
+        ast_node.set_type(ASTNodeType::Unary);
+
+        assert_eq!(ast_node.get_children().len(), 1);
+        assert_eq!(*ast_node.get_operation(), Some(Token::create(TokenType::Eof, String::from(""))));
+        assert_eq!(*ast_node.get_type(), ASTNodeType::Unary);
+
+        // Testing print no value (children Some)
+        ast_node.print(0, None);
+        // Testing print with value (children Some)
+        match std::fs::File::create("examples/ast.dot"){
+            Ok(file) => ast_node.print(0, Some(file)),
+            Err(e) => unreachable!(),
+        }
+
+        ast_node.set_children(vec![None]);
+
+        // Testing print no value (children None)
+        ast_node.print(0, None);
+        // Testing print with value (children None)
+        match std::fs::File::create("examples/ast.dot"){
+            Ok(file) => ast_node.print(0, Some(file)),
+            Err(e) => unreachable!(),
+        }
+
+        // Testing Debug for Code Coverage
+        println!("{:#?}", ast_node);
+    }
 }
