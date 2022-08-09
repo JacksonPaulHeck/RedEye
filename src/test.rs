@@ -214,7 +214,7 @@ mod tests {
             while for
             funct num str
             print return
-            test"
+            test",
         );
         let lexer = Lexer::from_iter(contents.chars());
         let mut tokens = Vec::new();
@@ -270,17 +270,16 @@ mod tests {
         for token in lexer {
             tokens.push(token);
         }
-        
+
         assert_eq!(Vec::<Token>::new(), tokens);
     }
 
     #[test]
-    fn test_ast(){        
-        use crate::token::Token;
-        use crate::token::TokenType;
+    fn test_ast() {
         use crate::ast::ASTNode;
         use crate::ast::ASTNodeType;
-        use crate::ast::ChildNode;
+        use crate::token::Token;
+        use crate::token::TokenType;
 
         // Construct ASTNode
         let mut ast_node = ASTNode::create(Vec::new(), None, ASTNodeType::Empty);
@@ -297,15 +296,18 @@ mod tests {
         ast_node.set_type(ASTNodeType::Unary);
 
         assert_eq!(ast_node.get_children().len(), 1);
-        assert_eq!(*ast_node.get_operation(), Some(Token::create(TokenType::Eof, String::from(""))));
+        assert_eq!(
+            *ast_node.get_operation(),
+            Some(Token::create(TokenType::Eof, String::from("")))
+        );
         assert_eq!(*ast_node.get_type(), ASTNodeType::Unary);
 
         // Testing print no value (children Some)
         ast_node.print(0, None);
         // Testing print with value (children Some)
-        match std::fs::File::create("examples/ast.dot"){
+        match std::fs::File::create("examples/ast.dot") {
             Ok(file) => ast_node.print(0, Some(file)),
-            Err(e) => unreachable!(),
+            Err(_) => unreachable!(),
         }
 
         ast_node.set_children(vec![None]);
@@ -313,9 +315,9 @@ mod tests {
         // Testing print no value (children None)
         ast_node.print(0, None);
         // Testing print with value (children None)
-        match std::fs::File::create("examples/ast.dot"){
+        match std::fs::File::create("examples/ast.dot") {
             Ok(file) => ast_node.print(0, Some(file)),
-            Err(e) => unreachable!(),
+            Err(_) => unreachable!(),
         }
 
         // Testing Debug for Code Coverage

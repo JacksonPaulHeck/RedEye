@@ -36,12 +36,12 @@ impl ASTNode {
                                 writeln!(output_file, " -> Node{}", layer)
                                     .expect("Unable to write to file");
                                 child.print(layer + 1, Some(out_file))
-                            },
+                            }
                             Err(e) => eprintln!("Unable to clone file: examples/ast.dot {e:#?}"),
                         },
                         None => {
                             println!("TODO: Write Error Message");
-                        },
+                        }
                     }
                 }
             }
@@ -51,7 +51,7 @@ impl ASTNode {
                         Some(child) => child.print(layer + 1, None),
                         None => {
                             println!("TODO: Write Error Message");
-                        },
+                        }
                     }
                 }
                 for _ in 0..layer {

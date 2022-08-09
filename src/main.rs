@@ -1,6 +1,7 @@
 mod args;
 mod ast;
 mod lex;
+mod parse;
 mod test;
 mod token;
 
@@ -31,6 +32,10 @@ fn repl(_args: args::Args) -> i32 {
                         println!("Exited!");
                         return 0;
                     } else if line_length > 0 {
+                        let lexer = lex::Lexer::from_iter(line.chars());
+                        for token in lexer {
+                            todo!();
+                        }
                         todo!();
                     } else {
                         eprintln!("Invalid Input");
@@ -52,31 +57,72 @@ fn repl(_args: args::Args) -> i32 {
 
 fn run_file(args: args::Args) -> i32 {
     use std::io::Read;
+    const SUCCESS: i32 = 0;
+    const ERROR: i32 = 101;
+    let mut result = 0;
+
+
     match args.get_input_file() {
         Some(input) => match std::fs::File::open(input) {
             Ok(mut input_file) => {
                 let mut contents = String::new();
                 match input_file.read_to_string(&mut contents) {
                     Ok(_) => {
-                        println!("TODO");
-                        return 0;
-                    }
+                        let lexer: lex::Lexer<std::str::Chars> =
+                            lex::Lexer::from_iter(contents.chars());
+                        let mut parser: parse::Parser = parse::Parser::new();
+
+                        for token in lexer {
+                            parser.push_token(token);
+                        }
+
+                        parser.push_token(token::Token::create(
+                            token::TokenType::Eof,
+                            String::from(""),
+                        ));
+
+                        result = parser.parse(&args);
+                        
+                        // Check for Parse Errror
+                        if result != 0 {
+                            eprintln!("Error in Parser");
+                            return result;
+                        }
+
+                        if *args.get_interpret() {
+                            for ast_node in parser.get_ast_nodes() {
+                                match ast_node.get_type() {
+                                    ast::ASTNodeType::Function | ast::ASTNodeType::Declaration => {
+                                        todo!();
+                                    },
+                                    _ => match ast_node.get_operation() {
+                                        Some(operation) => {
+                                            eprintln!("Cannot call functions outside of entry");
+                                            return ERROR;
+                                        },
+                                        None => todo!(),
+                                    }
+                                }
+                            }
+                        }
+                    },
                     Err(e) => {
                         eprintln!("{e:#?}");
-                        return 101;
-                    },
+                        result = 101;
+                    }
                 }
             }
             Err(e) => {
                 eprintln!("{e:#?}");
-                return 101;
-            },
+                result = 101;
+            }
         },
         None => {
             eprintln!("Unreachable");
-            return 101;
+            result = 101;
         }
     }
+    return result;
 }
 
 fn main() {
