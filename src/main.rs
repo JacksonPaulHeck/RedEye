@@ -27,9 +27,15 @@ fn run_line(
                     for token in lexer {
                         parser.push_token(token);
                     }
+
+                    parser.push_token(token::Token::create(
+                        token::TokenType::Eof,
+                        String::from(""),
+                    ));
+
                     parser.parse(&args);
-                    for _ast in parser.get_ast_nodes() {
-                        todo!();
+                    for ast in parser.get_ast_nodes() {
+                        println!("TODO: Interpret {:#?}", ast);
                     }
                     parser.set_tokens(Vec::<token::Token>::new());
                     return CONTINUE;
@@ -72,7 +78,7 @@ fn get_line(
                     flush_result = output.flush();
                     read_result = in_buffer.read_line(&mut line_inner);
                     line = line + &line_inner;
-                    if line_inner.chars().nth(0).unwrap() == '}'{
+                    if line_inner.chars().nth(0).unwrap() == '}' {
                         break;
                     }
                 }
@@ -83,18 +89,13 @@ fn get_line(
     }
 }
 
-fn repl(
-    args: args::Args,     
-    output: &mut dyn std::io::Write,
-    input: &mut dyn std::io::Read
-) -> i32 {
+fn repl(args: args::Args, output: &mut dyn std::io::Write, input: &mut dyn std::io::Read) -> i32 {
     let mut result;
     use std::io::BufRead;
     let mut in_buffer = std::io::BufReader::new(input);
     loop {
         let mut line = String::new();
         print!("-> ");
-        use std::io::Write;
         let mut flush_result: Result<(), std::io::Error> = output.flush();
         let mut read_result: Result<usize, std::io::Error> = in_buffer.read_line(&mut line);
         (line, flush_result, read_result) = get_line(
@@ -116,7 +117,7 @@ fn run_interpret(parser: parse::Parser) -> i32 {
     for ast_node in parser.get_ast_nodes() {
         match ast_node.get_type() {
             ast::ASTNodeType::Function | ast::ASTNodeType::Declaration => {
-                println!("TODO");
+                println!("TODO: Main - run_interpret() -> match type to Function or Declaration");
                 return SUCCESS;
             }
             _ => match ast_node.get_operation() {
@@ -125,7 +126,7 @@ fn run_interpret(parser: parse::Parser) -> i32 {
                     return ERROR;
                 }
                 None => {
-                    eprintln!("TODO");
+                    eprintln!("TODO: Main - run_interpret() -> match operation to None");
                     return ERROR;
                 }
             },

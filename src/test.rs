@@ -1,5 +1,6 @@
 #[cfg(test)]
 mod tests {
+
     #[test]
     fn test_token_types() {
         use crate::token::TokenType;
@@ -253,7 +254,7 @@ mod tests {
     }
 
     #[test]
-    fn get_args() {
+    fn test_get_args() {
         use crate::args::Args;
         use crate::get_args;
         let arguments: Vec<String> = vec![
@@ -279,7 +280,7 @@ mod tests {
     }
 
     #[test]
-    fn run_line() {
+    fn test_run_line() {
         use crate::args::Args;
         use crate::run_line;
         use crate::CONTINUE;
@@ -288,13 +289,12 @@ mod tests {
         use std::io::BufRead;
         use std::io::Write;
 
-        let input_file =
-            std::fs::File::open("examples/test/test_input_quit.night").expect("Unable to open file");
+        let input_file = std::fs::File::open("examples/test/test_input_quit.night")
+            .expect("Unable to open file");
         let output_file =
             std::fs::File::create("examples/test/output.night").expect("unable to open file");
         let mut line = String::new();
-        let flush_result: Result<(), std::io::Error> =
-            std::io::BufWriter::new(output_file).flush();
+        let flush_result: Result<(), std::io::Error> = std::io::BufWriter::new(output_file).flush();
         let read_result: Result<usize, std::io::Error> =
             std::io::BufReader::new(input_file).read_line(&mut line);
         let args = Args::create(None, false, false, false, false, false);
@@ -305,8 +305,7 @@ mod tests {
         let output_file =
             std::fs::File::create("examples/test/output.night").expect("unable to open file");
         line = String::new();
-        let flush_result: Result<(), std::io::Error> =
-            std::io::BufWriter::new(output_file).flush();
+        let flush_result: Result<(), std::io::Error> = std::io::BufWriter::new(output_file).flush();
         let read_result: Result<usize, std::io::Error> =
             std::io::BufReader::new(input_file).read_line(&mut line);
         let args = Args::create(None, false, false, false, false, false);
@@ -317,8 +316,7 @@ mod tests {
         let output_file =
             std::fs::File::create("examples/test/output.night").expect("unable to open file");
         line = String::new();
-        let flush_result: Result<(), std::io::Error> =
-            std::io::BufWriter::new(output_file).flush();
+        let flush_result: Result<(), std::io::Error> = std::io::BufWriter::new(output_file).flush();
         let read_result: Result<usize, std::io::Error> =
             std::io::BufReader::new(input_file).read_line(&mut line);
         let args = Args::create(None, false, false, false, false, false);
@@ -328,13 +326,13 @@ mod tests {
         let output_file =
             std::fs::File::create("examples/test/output.night").expect("unable to open file");
         line = String::new();
-        let flush_result: Result<(), std::io::Error> =
-            std::io::BufWriter::new(output_file).flush();
+        let flush_result: Result<(), std::io::Error> = std::io::BufWriter::new(output_file).flush();
         let read_result: Result<usize, std::io::Error> = Err(input_file);
         let args = Args::create(None, false, false, false, false, false);
         assert_eq!(run_line(&args, line, flush_result, read_result), ERROR);
 
-        let input_file = std::fs::File::open("examples/test/test.night").expect("Unable to open file");
+        let input_file =
+            std::fs::File::open("examples/test/test.night").expect("Unable to open file");
         let output_file = std::fs::File::create("").unwrap_err();
         line = String::new();
         let flush_result: Result<(), std::io::Error> = Err(output_file);
@@ -345,12 +343,13 @@ mod tests {
     }
 
     #[test]
-    fn get_line() {
+    fn test_get_line() {
         use crate::get_line;
         use std::io::BufRead;
         use std::io::Write;
 
-        let input_file = std::fs::File::open("examples/test/test.night").expect("Unable to open file");
+        let input_file =
+            std::fs::File::open("examples/test/test.night").expect("Unable to open file");
         let output_file =
             std::fs::File::create("examples/test/output.night").expect("unable to open file");
 
@@ -358,16 +357,22 @@ mod tests {
         let mut out_buffer = std::io::BufWriter::new(output_file);
 
         let mut line = String::new();
-        let flush_result: Result<(), std::io::Error> =
-            out_buffer.flush();
-        let read_result: Result<usize, std::io::Error> =
-            in_buffer.read_line(&mut line);
-        let (line_assert, _, _) =
-            get_line(line, flush_result, read_result, &mut out_buffer, &mut in_buffer);
-        assert_eq!(line_assert, String::from("funct entry() {\n    return(0);\n}"));
+        let flush_result: Result<(), std::io::Error> = out_buffer.flush();
+        let read_result: Result<usize, std::io::Error> = in_buffer.read_line(&mut line);
+        let (line_assert, _, _) = get_line(
+            line,
+            flush_result,
+            read_result,
+            &mut out_buffer,
+            &mut in_buffer,
+        );
+        assert_eq!(
+            line_assert,
+            String::from("funct entry() {\n    \n    return(0);\n}")
+        );
 
-
-        let input_file = std::fs::File::open("examples/test/test_continue.night").expect("Unable to open file");
+        let input_file =
+            std::fs::File::open("examples/test/test_continue.night").expect("Unable to open file");
         let output_file =
             std::fs::File::create("examples/test/output.night").expect("unable to open file");
 
@@ -375,42 +380,53 @@ mod tests {
         let mut out_buffer = std::io::BufWriter::new(output_file);
 
         let mut line = String::new();
-        let flush_result: Result<(), std::io::Error> =
-            out_buffer.flush();
-        let read_result: Result<usize, std::io::Error> =
-            in_buffer.read_line(&mut line);
-        let (line_assert, _, _) =
-            get_line(line, flush_result, read_result, &mut out_buffer, &mut in_buffer);
+        let flush_result: Result<(), std::io::Error> = out_buffer.flush();
+        let read_result: Result<usize, std::io::Error> = in_buffer.read_line(&mut line);
+        let (line_assert, _, _) = get_line(
+            line,
+            flush_result,
+            read_result,
+            &mut out_buffer,
+            &mut in_buffer,
+        );
         assert_eq!(line_assert, String::from("asdfasdf\n"));
 
-        let input_file = std::fs::File::open("examples/test/test_block.night").expect("Unable to open file");
+        let input_file =
+            std::fs::File::open("examples/test/test_block.night").expect("Unable to open file");
         let output_file =
             std::fs::File::create("examples/test/output.night").expect("unable to open file");
 
         let mut in_buffer = std::io::BufReader::new(input_file);
         let mut out_buffer = std::io::BufWriter::new(output_file);
         let mut line = String::new();
-        let flush_result: Result<(), std::io::Error> =
-            out_buffer.flush();
-        let read_result: Result<usize, std::io::Error> =
-            in_buffer.read_line(&mut line);
-        let (line_assert, _, _) =
-            get_line(line, flush_result, read_result, &mut out_buffer, &mut in_buffer);
+        let flush_result: Result<(), std::io::Error> = out_buffer.flush();
+        let read_result: Result<usize, std::io::Error> = in_buffer.read_line(&mut line);
+        let (line_assert, _, _) = get_line(
+            line,
+            flush_result,
+            read_result,
+            &mut out_buffer,
+            &mut in_buffer,
+        );
         assert_eq!(line_assert, String::from("{\n}"));
 
-        let input_file = std::fs::File::open("examples/test/test_empty.night").expect("Unable to open file");
+        let input_file =
+            std::fs::File::open("examples/test/test_empty.night").expect("Unable to open file");
         let output_file =
             std::fs::File::create("examples/test/output.night").expect("unable to open file");
 
         let mut in_buffer = std::io::BufReader::new(input_file);
         let mut out_buffer = std::io::BufWriter::new(output_file);
         let mut line = String::new();
-        let flush_result: Result<(), std::io::Error> =
-            out_buffer.flush();
-        let read_result: Result<usize, std::io::Error> =
-            in_buffer.read_line(&mut line);
-        let (line_assert, _, _) =
-            get_line(line, flush_result, read_result, &mut out_buffer, &mut in_buffer);
+        let flush_result: Result<(), std::io::Error> = out_buffer.flush();
+        let read_result: Result<usize, std::io::Error> = in_buffer.read_line(&mut line);
+        let (line_assert, _, _) = get_line(
+            line,
+            flush_result,
+            read_result,
+            &mut out_buffer,
+            &mut in_buffer,
+        );
         assert_eq!(line_assert, String::from(""));
     }
 
@@ -420,8 +436,10 @@ mod tests {
         use crate::repl;
         let args = Args::create(None, false, false, false, false, false);
 
-        let input_file = std::fs::File::open("examples/test/test_block.night").expect("Unable to open file");
-        let output_file = std::fs::File::create("examples/test/output.night").expect("unable to open file");
+        let input_file =
+            std::fs::File::open("examples/test/test_block.night").expect("Unable to open file");
+        let output_file =
+            std::fs::File::create("examples/test/output.night").expect("unable to open file");
 
         let mut in_buffer = std::io::BufReader::new(input_file);
         let mut out_buffer = std::io::BufWriter::new(output_file);
@@ -431,8 +449,8 @@ mod tests {
     #[ignore]
     #[test]
     fn integration_test() {
-        use crate::main;
-        main();
+        // use crate::main;
+        // main();
     }
 
     #[test]
@@ -502,14 +520,8 @@ mod tests {
         );
 
         let contents = String::from("_");
-        let lexer = Lexer::from_iter(contents.chars());
-        let mut tokens = Vec::<Token>::new();
-
-        for token in lexer {
-            tokens.push(token);
-        }
-
-        assert_eq!(Vec::<Token>::new(), tokens);
+        let mut lexer = Lexer::from_iter(contents.chars());
+        assert_eq!(lexer.next(), None);
     }
 
     #[test]
@@ -568,20 +580,18 @@ mod tests {
         // Testing print no value (children Some)
         ast_node.print(0, None);
         // Testing print with value (children Some)
-        match std::fs::File::create("examples/ast.dot") {
-            Ok(file) => ast_node.print(0, Some(file)),
-            Err(_) => unreachable!(),
-        }
+        let file =
+            std::fs::File::create("examples/test/test_ast.dot").expect("Unable to open file");
+        ast_node.print(0, Some(file));
 
         ast_node.set_children(vec![None]);
 
         // Testing print no value (children None)
         ast_node.print(0, None);
         // Testing print with value (children None)
-        match std::fs::File::create("examples/ast.dot") {
-            Ok(file) => ast_node.print(0, Some(file)),
-            Err(_) => unreachable!(),
-        }
+        let file =
+            std::fs::File::create("examples/test/test_ast.dot").expect("Unable to open file");
+        ast_node.print(0, Some(file));
 
         // Testing Debug for Code Coverage
         println!("{:#?}", ast_node);
@@ -628,6 +638,809 @@ mod tests {
         // Test Parse Function
         assert_eq!(parser.parse(&args), SUCCESS);
         parser.push_token(Token::create(TokenType::Error, String::from("error")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        parser = Parser::new();
+        parser.push_token(Token::create(TokenType::Number, String::from("0")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+    }
+
+    #[test]
+    fn test_parse_block() {
+        use crate::args::Args;
+        use crate::parse::Parser;
+        use crate::token::Token;
+        use crate::token::TokenType;
+        use crate::ERROR;
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Number, String::from("0")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+    }
+
+    #[test]
+    fn test_parse_declaration() {
+        use crate::args::Args;
+        use crate::parse::Parser;
+        use crate::token::Token;
+        use crate::token::TokenType;
+        use crate::ERROR;
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Funct, String::from("funct")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        parser = Parser::new();
+        parser.push_token(Token::create(TokenType::Identifier, String::from("asdf")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        parser = Parser::new();
+        parser.push_token(Token::create(TokenType::Identifier, String::from("asdf")));
+        parser.push_token(Token::create(TokenType::Colon, String::from(":")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        parser = Parser::new();
+        parser.push_token(Token::create(TokenType::Number, String::from("0")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+    }
+
+    #[test]
+    fn test_parse_function_declaration() {
+        use crate::args::Args;
+        use crate::parse::Parser;
+        use crate::token::Token;
+        use crate::token::TokenType;
+        use crate::ERROR;
+        use crate::SUCCESS;
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Funct, String::from("funct")));
+        parser.push_token(Token::create(TokenType::Identifier, String::from("test")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Funct, String::from("funct")));
+        parser.push_token(Token::create(TokenType::Identifier, String::from("test")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::Identifier, String::from("a")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Funct, String::from("funct")));
+        parser.push_token(Token::create(TokenType::Identifier, String::from("test")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::Colon, String::from(":")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Funct, String::from("funct")));
+        parser.push_token(Token::create(TokenType::Colon, String::from(":")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+    }
+
+    #[test]
+    fn test_parse_var_declaration() {
+        use crate::args::Args;
+        use crate::parse::Parser;
+        use crate::token::Token;
+        use crate::token::TokenType;
+        use crate::ERROR;
+        use crate::SUCCESS;
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Identifier, String::from("test")));
+        parser.push_token(Token::create(TokenType::Colon, String::from(":")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::Identifier, String::from("test")));
+        parser.push_token(Token::create(TokenType::Colon, String::from(":")));
+        parser.push_token(Token::create(TokenType::Num, String::from("num")));
+        parser.push_token(Token::create(TokenType::Equal, String::from("=")));
+        parser.push_token(Token::create(TokenType::Number, String::from("0")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::Identifier, String::from("test")));
+        parser.push_token(Token::create(TokenType::Colon, String::from(":")));
+        parser.push_token(Token::create(TokenType::Str, String::from("str")));
+        parser.push_token(Token::create(TokenType::Equal, String::from("=")));
+        parser.push_token(Token::create(TokenType::String, String::from("test")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+    }
+
+    #[test]
+    fn test_parse_statement() {
+        use crate::args::Args;
+        use crate::parse::Parser;
+        use crate::token::Token;
+        use crate::token::TokenType;
+        use crate::ERROR;
+        use crate::SUCCESS;
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Addition, String::from("+")));
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Print, String::from("print")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Return, String::from("return")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::If, String::from("if")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::While, String::from("while")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::For, String::from("for")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::While, String::from("while")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::Colon, String::from(":")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::While, String::from("while")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::Return, String::from("return")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::Number, String::from("0")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+    }
+
+    #[test]
+    fn test_parse_expression_statement() {
+        use crate::args::Args;
+        use crate::parse::Parser;
+        use crate::token::Token;
+        use crate::token::TokenType;
+        use crate::ERROR;
+        use crate::SUCCESS;
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Identifier, String::from("x")));
+        parser.push_token(Token::create(TokenType::Equal, String::from("=")));
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::Identifier, String::from("x")));
+        parser.push_token(Token::create(TokenType::Equal, String::from("=")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::Identifier, String::from("x")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Addition, String::from("+")));
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Addition, String::from("+")));
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+    }
+
+    #[test]
+    fn test_parse_for_statement() {
+        use crate::args::Args;
+        use crate::parse::Parser;
+        use crate::token::Token;
+        use crate::token::TokenType;
+        use crate::ERROR;
+        use crate::SUCCESS;
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::For, String::from("for")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::For, String::from("for")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::Identifier, String::from("i")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Identifier, String::from("i")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::For, String::from("for")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::Identifier, String::from("i")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Colon, String::from(":")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Identifier, String::from("i")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::For, String::from("for")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::Identifier, String::from("i")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Identifier, String::from("i")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Identifier, String::from("i")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::Colon, String::from(":")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::For, String::from("for")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::Identifier, String::from("i")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Identifier, String::from("i")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Identifier, String::from("i")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+    }
+
+    #[test]
+    fn test_parse_while_statement() {
+        use crate::args::Args;
+        use crate::parse::Parser;
+        use crate::token::Token;
+        use crate::token::TokenType;
+        use crate::ERROR;
+        use crate::SUCCESS;
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::While, String::from("while")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::While, String::from("while")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+    }
+
+    #[test]
+    fn test_parse_if_statement() {
+        use crate::args::Args;
+        use crate::parse::Parser;
+        use crate::token::Token;
+        use crate::token::TokenType;
+        use crate::ERROR;
+        use crate::SUCCESS;
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::If, String::from("if")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::If, String::from("if")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Else, String::from("else")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::If, String::from("if")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Else, String::from("else")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::Colon, String::from(":")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::If, String::from("if")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::Colon, String::from(":")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Else, String::from("else")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::If, String::from("if")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Else, String::from("else")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::If, String::from("if")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Else, String::from("else")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::If, String::from("if")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::CloseBrace, String::from("}")));
+        parser.push_token(Token::create(TokenType::Else, String::from("else")));
+        parser.push_token(Token::create(TokenType::OpenBrace, String::from("{")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+    }
+
+    #[test]
+    fn test_parse_return_statement() {
+        use crate::args::Args;
+        use crate::parse::Parser;
+        use crate::token::Token;
+        use crate::token::TokenType;
+        use crate::ERROR;
+        use crate::SUCCESS;
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Return, String::from("return")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Return, String::from("return")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::Number, String::from("0")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Return, String::from("return")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::Number, String::from("0")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Return, String::from("return")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+    }
+
+    #[test]
+    fn test_parse_print_statement() {
+        use crate::args::Args;
+        use crate::parse::Parser;
+        use crate::token::Token;
+        use crate::token::TokenType;
+        use crate::ERROR;
+        use crate::SUCCESS;
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Print, String::from("print")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Print, String::from("print")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+    }
+
+    #[test]
+    fn test_parse_expression() {
+        use crate::args::Args;
+        use crate::parse::Parser;
+        use crate::token::Token;
+        use crate::token::TokenType;
+        use crate::ERROR;
+        use crate::SUCCESS;
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Print, String::from("print")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Identifier, String::from("x")));
+        parser.push_token(Token::create(TokenType::Equal, String::from("=")));
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Identifier, String::from("x")));
+        parser.push_token(Token::create(TokenType::Equal, String::from("=")));
+        parser.push_token(Token::create(TokenType::Not, String::from("!")));
+        parser.push_token(Token::create(TokenType::Identifier, String::from("x")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Identifier, String::from("x")));
+        parser.push_token(Token::create(TokenType::Equal, String::from("=")));
+        parser.push_token(Token::create(TokenType::Not, String::from("!")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+    }
+
+    #[test]
+    fn test_parse_terminal() {
+        use crate::args::Args;
+        use crate::parse::Parser;
+        use crate::token::Token;
+        use crate::token::TokenType;
+        use crate::ERROR;
+        use crate::SUCCESS;
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Addition, String::from("+")));
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Subtract, String::from("-")));
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Multiply, String::from("*")));
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Divide, String::from("/")));
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Less, String::from("<")));
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Greater, String::from(">")));
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::LessEqual, String::from("<=")));
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::GreaterEqual, String::from(">=")));
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::BangEqual, String::from("!=")));
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::EqualEqual, String::from("==")));
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::Colon, String::from(":")));
+        parser.push_token(Token::create(TokenType::EqualEqual, String::from("==")));
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::EqualEqual, String::from("==")));
+        parser.push_token(Token::create(TokenType::Colon, String::from(":")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+    }
+
+    #[test]
+    fn test_parse_primary() {
+        use crate::args::Args;
+        use crate::parse::Parser;
+        use crate::token::Token;
+        use crate::token::TokenType;
+        use crate::ERROR;
+        use crate::SUCCESS;
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::Bool, String::from("true")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::String, String::from("test")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Addition, String::from("+")));
+        parser.push_token(Token::create(TokenType::Identifier, String::from("test")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Addition, String::from("+")));
+        parser.push_token(Token::create(TokenType::Identifier, String::from("test")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Addition, String::from("+")));
+        parser.push_token(Token::create(TokenType::Identifier, String::from("test")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::Colon, String::from(":")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+    }
+
+    #[test]
+    fn test_parse_primary_block() {
+        use crate::args::Args;
+        use crate::parse::Parser;
+        use crate::token::Token;
+        use crate::token::TokenType;
+        use crate::ERROR;
+        use crate::SUCCESS;
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Identifier, String::from("test")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::Comma, String::from(",")));
+        parser.push_token(Token::create(TokenType::Number, String::from("1")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), SUCCESS);
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Identifier, String::from("test")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::Colon, String::from(":")));
+        parser.push_token(Token::create(TokenType::Comma, String::from(",")));
+        parser.push_token(Token::create(TokenType::Colon, String::from(":")));
+        parser.push_token(Token::create(TokenType::CloseParen, String::from(")")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
+        assert_eq!(parser.parse(&args), ERROR);
+
+        let mut parser: Parser = Parser::new();
+        let args = Args::create(None, false, false, false, false, false);
+        parser.push_token(Token::create(TokenType::Identifier, String::from("test")));
+        parser.push_token(Token::create(TokenType::OpenParen, String::from("(")));
+        parser.push_token(Token::create(TokenType::Colon, String::from(":")));
+        parser.push_token(Token::create(TokenType::Comma, String::from(",")));
+        parser.push_token(Token::create(TokenType::Colon, String::from(":")));
+        parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
+        parser.push_token(Token::create(TokenType::Eof, String::from("")));
         assert_eq!(parser.parse(&args), ERROR);
     }
 }

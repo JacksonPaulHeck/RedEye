@@ -8,6 +8,7 @@ pub struct Args {
     run: bool,
 }
 
+#[allow(dead_code)]
 impl Args {
     pub fn create(
         input_file: Option<String>,

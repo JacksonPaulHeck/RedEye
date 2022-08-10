@@ -1,4 +1,5 @@
-#[derive(Debug, PartialEq)]
+#[allow(dead_code)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum TokenType {
     OpenParen,
     CloseParen,
@@ -44,12 +45,13 @@ pub enum TokenType {
     Error,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Token {
     token_type: TokenType,
     data: String,
 }
 
+#[allow(dead_code)]
 impl Token {
     pub fn create(token_type: TokenType, data: String) -> Self {
         return Token {

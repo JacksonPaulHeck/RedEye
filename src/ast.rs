@@ -4,6 +4,7 @@ use std::io::Write;
 
 pub type ChildNode = Option<Box<ASTNode>>;
 
+#[allow(dead_code)]
 #[derive(Debug, PartialEq)]
 pub enum ASTNodeType {
     Empty,
@@ -24,6 +25,7 @@ pub struct ASTNode {
     node_type: ASTNodeType,
 }
 
+#[allow(dead_code)]
 impl ASTNode {
     pub fn print(&self, layer: usize, file: Option<File>) {
         match file {
