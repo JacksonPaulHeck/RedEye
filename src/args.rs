@@ -1,3 +1,4 @@
+#[derive(Debug, PartialEq)]
 pub struct Args {
     input_file: Option<String>,
     dot: bool,
@@ -7,6 +8,7 @@ pub struct Args {
     run: bool,
 }
 
+#[allow(dead_code)]
 impl Args {
     pub fn create(
         input_file: Option<String>,

@@ -20,12 +20,10 @@ jobs:
         rustup default nightly
         cargo install grcov
         rustup component add llvm-tools-preview
-       
-    - name: Build
-      run: |
-        export RUSTFLAGS="-C instrument-coverage"
-        cargo build --verbose
 
+    - name: Run Build
+      run: cargo build
+    
     - name: Run tests
       run: |
         export RUSTFLAGS="-C instrument-coverage"
