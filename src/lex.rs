@@ -97,7 +97,7 @@ impl<T: Iterator<Item = char>> Iterator for Lexer<T> {
                             "if" => Some(token::Token::create(token::TokenType::If, text)),
                             "else" => Some(token::Token::create(token::TokenType::Else, text)),
                             "true" | "false" => {
-                                Some(token::Token::create(token::TokenType::Bool, text))
+                                Some(token::Token::create(token::TokenType::Boolean, text))
                             }
                             "while" => Some(token::Token::create(token::TokenType::While, text)),
                             "for" => Some(token::Token::create(token::TokenType::For, text)),

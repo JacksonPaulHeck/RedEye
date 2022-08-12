@@ -38,7 +38,7 @@ pub enum TokenType {
     While,
     Print,
     String,
-    Bool,
+    Boolean,
     Number,
     Identifier,
     Eof,

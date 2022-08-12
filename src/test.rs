@@ -44,7 +44,7 @@ mod tests {
         let token_type_while: TokenType = TokenType::While;
         let token_type_print: TokenType = TokenType::Print;
         let token_type_string: TokenType = TokenType::String;
-        let token_type_bool: TokenType = TokenType::Bool;
+        let token_type_boolean: TokenType = TokenType::Boolean;
         let token_type_number: TokenType = TokenType::Number;
         let token_type_identifier: TokenType = TokenType::Identifier;
         let token_type_eof: TokenType = TokenType::Eof;
@@ -87,7 +87,7 @@ mod tests {
         assert_eq!(token_type_while, TokenType::While);
         assert_eq!(token_type_print, TokenType::Print);
         assert_eq!(token_type_string, TokenType::String);
-        assert_eq!(token_type_bool, TokenType::Bool);
+        assert_eq!(token_type_boolean, TokenType::Boolean);
         assert_eq!(token_type_number, TokenType::Number);
         assert_eq!(token_type_identifier, TokenType::Identifier);
         assert_eq!(token_type_eof, TokenType::Eof);
@@ -171,13 +171,12 @@ mod tests {
         ast_node = ASTNode::create(Vec::new(), None, ASTNodeType::Function);
         parser.set_ast_nodes(vec![ast_node]);
         assert_eq!(run_interpret(&args, parser), ERROR);
-        
+
         let args = Args::create(None, false, false, true, false, false);
         parser = Parser::new();
         ast_node = ASTNode::create(Vec::new(), None, ASTNodeType::Function);
         parser.set_ast_nodes(vec![ast_node]);
-        assert_eq!(run_interpret(&args, parser), SUCCESS);
-
+        assert_eq!(run_interpret(&args, parser), ERROR);
 
         parser = Parser::new();
         ast_node = ASTNode::create(
@@ -465,7 +464,6 @@ mod tests {
     }
 
     
-    
     #[test]
     fn integration_test() {
         // use crate::main;
@@ -525,8 +523,8 @@ mod tests {
                 Token::create(TokenType::Number, String::from("10")),
                 Token::create(TokenType::If, String::from("if")),
                 Token::create(TokenType::Else, String::from("else")),
-                Token::create(TokenType::Bool, String::from("true")),
-                Token::create(TokenType::Bool, String::from("false")),
+                Token::create(TokenType::Boolean, String::from("true")),
+                Token::create(TokenType::Boolean, String::from("false")),
                 Token::create(TokenType::While, String::from("while")),
                 Token::create(TokenType::For, String::from("for")),
                 Token::create(TokenType::Funct, String::from("funct")),
@@ -1389,7 +1387,7 @@ mod tests {
         assert_eq!(parser.parse(&args), SUCCESS);
 
         let mut parser: Parser = Parser::new();
-        parser.push_token(Token::create(TokenType::Bool, String::from("true")));
+        parser.push_token(Token::create(TokenType::Boolean, String::from("true")));
         parser.push_token(Token::create(TokenType::Semicolon, String::from(";")));
         parser.push_token(Token::create(TokenType::Eof, String::from("")));
         assert_eq!(parser.parse(&args), SUCCESS);
@@ -1482,16 +1480,111 @@ mod tests {
         assert_eq!(parser.parse(&args), ERROR);
     }
 
+    
     #[test]
     fn test_interpret_interpret() {
         use crate::args::Args;
         use crate::ast::ChildNode;
         use crate::interpret::Interpreter;
+        use crate::ERROR;
+        use crate::SUCCESS;
+
         let interpreter: Interpreter = Interpreter::new();
         let args = Args::create(None, false, false, true, false, false);
         let ast: ChildNode = None;
-        assert_eq!(interpreter.interpret(&args, &ast), 0);
+        assert_eq!(interpreter.interpret(&args, &ast), ERROR);
         let args = Args::create(None, false, false, false, false, false);
-        assert_eq!(interpreter.interpret(&args, &ast), 101);
+        assert_eq!(interpreter.interpret(&args, &ast), ERROR);
+    }
+
+    
+    #[test]
+    fn test_visit() {
+        use crate::args::Args;
+        use crate::interpret::Interpreter;
+        use crate::ast::ASTNode;
+        use crate::ast::ASTNodeType;
+        use crate::ast::ChildNode;
+        use crate::token::Token;
+        use crate::token::TokenType;
+        use crate::ERROR;
+        use crate::SUCCESS;
+
+        let interpreter: Interpreter = Interpreter::new();
+        let args = Args::create(None, false, false, true, false, false);
+        let mut ast: ChildNode = None;
+        assert_eq!(interpreter.interpret(&args, &ast), ERROR);
+
+
+        ast = Some(Box::new(ASTNode::create(
+            Vec::new(),
+            Some(Token::create(TokenType::Number, String::from(""))),
+            ASTNodeType::Primative,
+        )));
+
+        assert_eq!(interpreter.interpret(&args, &ast), SUCCESS);
+
+        ast = Some(Box::new(ASTNode::create(
+            Vec::new(),
+            None,
+            ASTNodeType::Empty,
+        )));
+
+        assert_eq!(interpreter.interpret(&args, &ast), ERROR);
+
+        let args = Args::create(None, false, false, false, false, false);
+        assert_eq!(interpreter.interpret(&args, &ast), ERROR);
+    }
+
+    #[test]
+    fn test_interpret_primative() {
+        use crate::args::Args;
+        use crate::ast::ASTNode;
+        use crate::ast::ASTNodeType;
+        use crate::ast::ChildNode;
+        use crate::token::Token;
+        use crate::token::TokenType;
+        use crate::interpret::Interpreter;
+        use crate::ERROR;
+        use crate::SUCCESS;
+
+        let interpreter: Interpreter = Interpreter::new();
+        let mut args = Args::create(None, false, false, true, false, false);
+        let mut ast: ChildNode = None;
+
+        ast = Some(Box::new(ASTNode::create(
+            Vec::new(),
+            Some(Token::create(TokenType::Number, String::from(""))),
+            ASTNodeType::Primative,
+        )));
+        assert_eq!(interpreter.interpret(&args, &ast), SUCCESS);
+
+        ast = Some(Box::new(ASTNode::create(
+            Vec::new(),
+            None,       
+            ASTNodeType::Primative,
+        )));
+        assert_eq!(interpreter.interpret(&args, &ast), ERROR);
+
+        ast = Some(Box::new(ASTNode::create(
+            Vec::new(),
+            Some(Token::create(TokenType::Error, String::from("error"))),       
+            ASTNodeType::Primative,
+        )));
+        assert_eq!(interpreter.interpret(&args, &ast), ERROR);
+
+        ast = Some(Box::new(ASTNode::create(
+            Vec::new(),
+            Some(Token::create(TokenType::String, String::from("test"))),
+            ASTNodeType::Primative,
+        )));
+        assert_eq!(interpreter.interpret(&args, &ast), SUCCESS);
+
+        ast = Some(Box::new(ASTNode::create(
+            Vec::new(),
+            Some(Token::create(TokenType::Boolean, String::from("true"))),       
+            ASTNodeType::Primative,
+        )));
+        assert_eq!(interpreter.interpret(&args, &ast), SUCCESS);
     }
 }
