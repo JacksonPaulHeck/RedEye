@@ -3,6 +3,8 @@ use crate::ast;
 use crate::token;
 use crate::ERROR;
 use crate::SUCCESS;
+
+#[allow(dead_code)]
 pub struct Interpreter {
     variables: std::collections::HashMap<String, Option<token::Token>>,
     functions: std::collections::HashMap<String, Vec<ast::ChildNode>>,
@@ -16,24 +18,26 @@ impl Interpreter {
     }
 
     fn visit_primative(&self, ast_ptr: &ast::ASTNode) -> Option<token::Token> {
-            match ast_ptr.get_operation() {
-                Some(operation) => match operation.get_type() {
-                    token::TokenType::Number => return ast_ptr.get_operation().clone(),
-                    token::TokenType::String => return ast_ptr.get_operation().clone(),
-                    token::TokenType::Boolean => return ast_ptr.get_operation().clone(),
-                    _ => return None,
-                },
-                None => return None,
-            }
+        match ast_ptr.get_operation() {
+            Some(operation) => match operation.get_type() {
+                token::TokenType::Number => return ast_ptr.get_operation().clone(),
+                token::TokenType::String => return ast_ptr.get_operation().clone(),
+                token::TokenType::Boolean => return ast_ptr.get_operation().clone(),
+                _ => return None,
+            },
+            None => return None,
+        }
     }
 
     fn visit(&self, ast: &ast::ChildNode) -> Option<token::Token> {
         match ast {
-            Some(ast_ptr) => match ast_ptr.get_type() {
-                ast::ASTNodeType::Primative => return self.visit_primative(ast_ptr),
-                _ => {
-                    println!("TODO: INTERPRETER -> visit() Some value in match, ASTNodeType not Covered");
-                    return None;
+            Some(ast_ptr) => {
+                match ast_ptr.get_type() {
+                    ast::ASTNodeType::Primative => return self.visit_primative(ast_ptr),
+                    _ => {
+                        println!("TODO: INTERPRETER -> visit() Some value in match, ASTNodeType not Covered");
+                        return None;
+                    }
                 }
             }
             None => {
