@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
 
-    #[ignore]
+    
     #[test]
     fn test_token_types() {
         use crate::token::TokenType;
@@ -94,7 +94,7 @@ mod tests {
         assert_eq!(token_type_error, TokenType::Error);
     }
 
-    #[ignore]
+    
     #[test]
     fn test_token() {
         use crate::token::Token;
@@ -115,7 +115,7 @@ mod tests {
         assert_eq!(token.get_data(), &String::from("Eof"));
     }
 
-    #[ignore]
+    
     #[test]
     fn test_args() {
         use crate::args::Args;
@@ -147,7 +147,7 @@ mod tests {
         assert_eq!(args.get_run(), &true);
     }
 
-    #[ignore]
+    
     #[test]
     fn test_run_interpret() {
         use crate::args::Args;
@@ -185,7 +185,7 @@ mod tests {
         assert_eq!(run_interpret(&args, parser), SUCCESS);
     }
 
-    #[ignore]
+    
     #[test]
     fn test_run_file() {
         use crate::args::Args;
@@ -260,7 +260,7 @@ mod tests {
         run_file(args);
     }
 
-    #[ignore]
+    
     #[test]
     fn test_get_args() {
         use crate::args::Args;
@@ -287,7 +287,7 @@ mod tests {
         );
     }
 
-    #[ignore]
+    
     #[test]
     fn test_run_line() {
         use crate::args::Args;
@@ -351,7 +351,7 @@ mod tests {
         assert_eq!(run_line(&args, line, flush_result, read_result), ERROR);
     }
 
-    #[ignore]
+    
     #[test]
     fn test_get_line() {
         use crate::get_line;
@@ -440,7 +440,7 @@ mod tests {
         assert_eq!(line_assert, String::from(""));
     }
 
-    #[ignore]
+    
     #[test]
     fn test_repl() {
         use crate::args::Args;
@@ -457,15 +457,15 @@ mod tests {
         repl(args, &mut out_buffer, &mut in_buffer);
     }
 
-    #[ignore]
-    #[ignore]
+    
+    
     #[test]
     fn integration_test() {
         // use crate::main;
         // main();
     }
 
-    #[ignore]
+    
     #[test]
     fn test_lexer() {
         use crate::lex::Lexer;
@@ -537,7 +537,7 @@ mod tests {
         assert_eq!(lexer.next(), None);
     }
 
-    #[ignore]
+    
     #[test]
     fn test_ast_node_types() {
         use crate::ast::ASTNodeType;
@@ -563,7 +563,7 @@ mod tests {
         assert_eq!(ast_node_type_declaration, ASTNodeType::Declaration);
     }
 
-    #[ignore]
+    
     #[test]
     fn test_ast() {
         use crate::ast::ASTNode;
@@ -612,7 +612,7 @@ mod tests {
         println!("{:#?}", ast_node);
     }
 
-    #[ignore]
+    
     #[test]
     fn test_parse() {
         use crate::args::Args;
@@ -662,7 +662,7 @@ mod tests {
         assert_eq!(parser.parse(&args), ERROR);
     }
 
-    #[ignore]
+    
     #[test]
     fn test_parse_block() {
         use crate::args::Args;
@@ -678,7 +678,7 @@ mod tests {
         assert_eq!(parser.parse(&args), ERROR);
     }
 
-    #[ignore]
+    
     #[test]
     fn test_parse_declaration() {
         use crate::args::Args;
@@ -710,7 +710,7 @@ mod tests {
         assert_eq!(parser.parse(&args), ERROR);
     }
 
-    #[ignore]
+    
     #[test]
     fn test_parse_function_declaration() {
         use crate::args::Args;
@@ -763,7 +763,7 @@ mod tests {
         assert_eq!(parser.parse(&args), ERROR);
     }
 
-    #[ignore]
+    
     #[test]
     fn test_parse_var_declaration() {
         use crate::args::Args;
@@ -801,7 +801,7 @@ mod tests {
         assert_eq!(parser.parse(&args), SUCCESS);
     }
 
-    #[ignore]
+    
     #[test]
     fn test_parse_statement() {
         use crate::args::Args;
@@ -894,7 +894,7 @@ mod tests {
         assert_eq!(parser.parse(&args), SUCCESS);
     }
 
-    #[ignore]
+    
     #[test]
     fn test_parse_expression_statement() {
         use crate::args::Args;
@@ -941,7 +941,7 @@ mod tests {
         assert_eq!(parser.parse(&args), SUCCESS);
     }
 
-    #[ignore]
+    
     #[test]
     fn test_parse_for_statement() {
         use crate::args::Args;
@@ -1022,7 +1022,7 @@ mod tests {
         assert_eq!(parser.parse(&args), SUCCESS);
     }
 
-    #[ignore]
+    
     #[test]
     fn test_parse_while_statement() {
         use crate::args::Args;
@@ -1052,7 +1052,7 @@ mod tests {
         assert_eq!(parser.parse(&args), ERROR);
     }
 
-    #[ignore]
+    
     #[test]
     fn test_parse_if_statement() {
         use crate::args::Args;
@@ -1149,7 +1149,7 @@ mod tests {
         assert_eq!(parser.parse(&args), ERROR);
     }
 
-    #[ignore]
+    
     #[test]
     fn test_parse_return_statement() {
         use crate::args::Args;
@@ -1196,7 +1196,7 @@ mod tests {
         assert_eq!(parser.parse(&args), ERROR);
     }
 
-    #[ignore]
+    
     #[test]
     fn test_parse_print_statement() {
         use crate::args::Args;
@@ -1226,7 +1226,7 @@ mod tests {
         assert_eq!(parser.parse(&args), SUCCESS);
     }
 
-    #[ignore]
+    
     #[test]
     fn test_parse_expression() {
         use crate::args::Args;
@@ -1274,7 +1274,7 @@ mod tests {
         assert_eq!(parser.parse(&args), ERROR);
     }
 
-    #[ignore]
+    
     #[test]
     fn test_parse_terminal() {
         use crate::args::Args;
@@ -1364,7 +1364,7 @@ mod tests {
         assert_eq!(parser.parse(&args), ERROR);
     }
 
-    #[ignore]
+    
     #[test]
     fn test_parse_primary() {
         use crate::args::Args;
@@ -1429,7 +1429,7 @@ mod tests {
         assert_eq!(parser.parse(&args), ERROR);
     }
 
-    #[ignore]
+    
     #[test]
     fn test_parse_primary_block() {
         use crate::args::Args;
