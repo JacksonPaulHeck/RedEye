@@ -266,7 +266,7 @@ impl Parser {
                         return Some(ast::ASTNode::create(
                             vec![Some(Box::new(node))],
                             Some(token),
-                            ast::ASTNodeType::Unary,
+                            ast::ASTNodeType::Return,
                         ))
                     }
                     None => return None,

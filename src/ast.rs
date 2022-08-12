@@ -9,6 +9,7 @@ pub type ChildNode = Option<Box<ASTNode>>;
 pub enum ASTNodeType {
     Empty,
     Primative,
+    Return,
     Unary,
     Binary,
     Ternary,
