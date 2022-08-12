@@ -170,7 +170,14 @@ mod tests {
         parser = Parser::new();
         ast_node = ASTNode::create(Vec::new(), None, ASTNodeType::Function);
         parser.set_ast_nodes(vec![ast_node]);
+        assert_eq!(run_interpret(&args, parser), ERROR);
+        
+        let args = Args::create(None, false, false, true, false, false);
+        parser = Parser::new();
+        ast_node = ASTNode::create(Vec::new(), None, ASTNodeType::Function);
+        parser.set_ast_nodes(vec![ast_node]);
         assert_eq!(run_interpret(&args, parser), SUCCESS);
+
 
         parser = Parser::new();
         ast_node = ASTNode::create(
