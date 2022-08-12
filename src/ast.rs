@@ -5,7 +5,7 @@ use std::io::Write;
 pub type ChildNode = Option<Box<ASTNode>>;
 
 #[allow(dead_code)]
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum ASTNodeType {
     Empty,
     Unary,
@@ -18,7 +18,7 @@ pub enum ASTNodeType {
     Declaration,
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct ASTNode {
     children: Vec<ChildNode>,
     operation: Option<token::Token>,
