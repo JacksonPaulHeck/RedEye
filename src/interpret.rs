@@ -29,21 +29,23 @@ impl Interpreter {
         }
     }
 
+    fn visit_return(&self, ast_ptr: &ast::ASTNode) -> Option<token::Token> {
+        return self.visit(&ast_ptr.get_children()[0]);
+    }
+
     fn visit(&self, ast: &ast::ChildNode) -> Option<token::Token> {
         match ast {
             Some(ast_ptr) => {
                 match ast_ptr.get_type() {
                     ast::ASTNodeType::Primative => return self.visit_primative(ast_ptr),
+                    ast::ASTNodeType::Return => return self.visit_return(ast_ptr),
                     _ => {
                         println!("TODO: INTERPRETER -> visit() Some value in match, ASTNodeType not Covered");
                         return None;
                     }
                 }
             }
-            None => {
-                println!("TODO: INTERPRETER -> visit() None value in match");
-                return None;
-            }
+            None => return None,
         }
     }
 

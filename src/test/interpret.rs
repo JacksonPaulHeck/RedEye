@@ -101,3 +101,38 @@ fn test_interpret_primative() {
     )));
     assert_eq!(interpreter.interpret(&args, &ast), SUCCESS);
 }
+
+#[test]
+fn test_interpret_return() {
+    use crate::args::Args;
+    use crate::ast::ASTNode;
+    use crate::ast::ASTNodeType;
+    use crate::ast::ChildNode;
+    use crate::interpret::Interpreter;
+    use crate::token::Token;
+    use crate::token::TokenType;
+    use crate::ERROR;
+    use crate::SUCCESS;
+
+    let interpreter: Interpreter = Interpreter::new();
+    let args = Args::create(None, false, false, true, false, false);
+    let mut ast: ChildNode;
+
+    ast = Some(Box::new(ASTNode::create(
+        vec![None],
+        Some(Token::create(TokenType::Return, String::from("return"))),
+        ASTNodeType::Return,
+    )));
+    assert_eq!(interpreter.interpret(&args, &ast), ERROR);
+
+    ast = Some(Box::new(ASTNode::create(
+        vec![Some(Box::new(ASTNode::create(
+            Vec::new(),
+            Some(Token::create(TokenType::Number, String::from("0"))),
+            ASTNodeType::Primative,
+        )))],
+        Some(Token::create(TokenType::Return, String::from("return"))),
+        ASTNodeType::Return,
+    )));
+    assert_eq!(interpreter.interpret(&args, &ast), SUCCESS);
+}
