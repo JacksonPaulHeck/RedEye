@@ -120,7 +120,7 @@ fn run_interpret(args: &args::Args, parser: parse::Parser) -> i32 {
     for ast_node in parser.get_ast_nodes() {
         match ast_node.get_type() {
             ast::ASTNodeType::Function | ast::ASTNodeType::Declaration => {
-                return interpreter.interpret(&args, Some(Box::new(ast_node.clone())));
+                return interpreter.interpret(&args, &Some(Box::new(ast_node.clone())));
             }
             _ => match ast_node.get_operation() {
                 Some(_) => {

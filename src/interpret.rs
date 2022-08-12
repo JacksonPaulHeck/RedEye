@@ -13,11 +13,11 @@ impl Interpreter {
         };
     }
 
-    fn visit(&self, ast: ast::ChildNode) -> i32 {
+    fn visit(&self, ast: &ast::ChildNode) -> i32 {
         return 0;
     }
 
-    pub fn interpret(&self, args: &args::Args, ast: ast::ChildNode) -> i32 {
+    pub fn interpret(&self, args: &args::Args, ast: &ast::ChildNode) -> i32 {
         if *args.get_interpret() {
             return self.visit(ast);
         }

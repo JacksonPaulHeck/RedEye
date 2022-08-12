@@ -1483,6 +1483,8 @@ mod tests {
         let interpreter: Interpreter = Interpreter::new();
         let args = Args::create(None, false, false, true, false, false);
         let ast: ChildNode = None;
-        assert_eq!(interpreter.interpret(&args, ast), 0);
+        assert_eq!(interpreter.interpret(&args, &ast), 0);
+        let args = Args::create(None, false, false, false, false, false);
+        assert_eq!(interpreter.interpret(&args, &ast), 101);
     }
 }
