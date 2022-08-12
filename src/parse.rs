@@ -91,7 +91,7 @@ impl Parser {
     }
 
     fn bool(&mut self) -> Option<ast::ASTNode> {
-        self.consume(vec![token::TokenType::Bool]);
+        self.consume(vec![token::TokenType::Boolean]);
         return Some(ast::ASTNode::create(
             Vec::new(),
             Some(self.tokens[self.current_node - 1].clone()),
@@ -159,7 +159,7 @@ impl Parser {
     fn primary(&mut self) -> Option<ast::ASTNode> {
         return match self.tokens[self.current_node].get_type() {
             token::TokenType::Number => self.number(),
-            token::TokenType::Bool => self.bool(),
+            token::TokenType::Boolean => self.bool(),
             token::TokenType::String => self.string(),
             token::TokenType::OpenParen => self.primary_block(),
             token::TokenType::Identifier => self.identifier(),
