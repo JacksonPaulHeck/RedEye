@@ -188,8 +188,7 @@ impl Parser {
                 token::TokenType::Less,
                 token::TokenType::Greater,
             ]) {
-                let mut token =
-                    self.consume(vec![self.tokens[self.current_node].get_type().clone()]);
+                let token = self.consume(vec![self.tokens[self.current_node].get_type().clone()]);
                 match self.primary() {
                     Some(primary) => match node_ptr {
                         Some(node) => {
@@ -467,7 +466,7 @@ impl Parser {
             node = self.expression();
         }
         self.consume(vec![token::TokenType::Semicolon]);
-        match node {        
+        match node {
             Some(node_ptr) => {
                 return Some(ast::ASTNode::create(
                     vec![
@@ -481,7 +480,7 @@ impl Parser {
                     Some(identifier),
                     ast::ASTNodeType::Declaration,
                 ));
-            },
+            }
             None => return None,
         }
     }

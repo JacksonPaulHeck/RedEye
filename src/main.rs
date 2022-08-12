@@ -1,5 +1,7 @@
+// RedEye Programming Language
 mod args;
 mod ast;
+mod interpret;
 mod lex;
 mod parse;
 mod test;
@@ -113,12 +115,12 @@ fn repl(args: args::Args, output: &mut dyn std::io::Write, input: &mut dyn std::
     return result;
 }
 
-fn run_interpret(parser: parse::Parser) -> i32 {
+fn run_interpret(args: &args::Args, parser: parse::Parser) -> i32 {
+    let interpreter: interpret::Interpreter = interpret::Interpreter::new();
     for ast_node in parser.get_ast_nodes() {
         match ast_node.get_type() {
             ast::ASTNodeType::Function | ast::ASTNodeType::Declaration => {
-                println!("TODO: Main - run_interpret() -> match type to Function or Declaration");
-                return SUCCESS;
+                return interpreter.interpret(&args, &Some(Box::new(ast_node.clone())));
             }
             _ => match ast_node.get_operation() {
                 Some(_) => {
@@ -167,7 +169,7 @@ fn run_file(args: args::Args) -> i32 {
                         }
 
                         if *args.get_interpret() {
-                            result = run_interpret(parser);
+                            result = run_interpret(&args, parser);
                         }
                     }
                     Err(e) => {

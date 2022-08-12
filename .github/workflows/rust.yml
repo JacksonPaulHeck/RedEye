@@ -18,7 +18,7 @@ jobs:
     - name: Environment Setup
       run: |
         rustup default nightly
-        cargo install grcov
+        # cargo install grcov
         rustup component add llvm-tools-preview
 
     - name: Run Build
@@ -31,22 +31,22 @@ jobs:
         export LLVM_PROFILE_FILE="./target/debug/coverage/default.profraw"
         cargo test --verbose
     
-    - name: Get Coverage Report
-      run: |
-        grcov . --binary-path ./target/debug/deps -s . -t html --branch --ignore-not-existing -o ./target/debug/coverage/
+        # - name: Get Coverage Report
+        # run: |
+        # grcov . --binary-path ./target/debug/deps -s . -t html --branch --ignore-not-existing -o ./target/debug/coverage/
         
-    - name: Copy output files to artifact directory
-      run: |
-        mkdir artifacts
-        for f in ./target/debug/coverage/*
-        do
-          echo "  Copying $f"
-          cp -r -v $f artifacts/
-        done
-    - name: Upload output files to GitHub so they can be reviewed
-      uses: actions/upload-artifact@v1
-      with:
-        name: coverage_report
-        path: artifacts
+        # - name: Copy output files to artifact directory
+        # run: |
+        # mkdir artifacts
+        # for f in ./target/debug/coverage/*
+        # do
+        #   echo "  Copying $f"
+        #   cp -r -v $f artifacts/
+        # done
+        # - name: Upload output files to GitHub so they can be reviewed
+        # uses: actions/upload-artifact@v1
+        # with:
+        # name: coverage_report
+        # path: artifacts
       
       
