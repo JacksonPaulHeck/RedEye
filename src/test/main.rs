@@ -38,7 +38,7 @@ fn test_run_interpret() {
     assert_eq!(run_interpret(&args, parser), ERROR);
 
     parser = Parser::new();
-    assert_eq!(run_interpret(&args, parser), SUCCESS);
+    assert_eq!(run_interpret(&args, parser), ERROR);
 }
 
 #[test]
@@ -228,7 +228,7 @@ fn test_get_line() {
     );
     assert_eq!(
         line_assert,
-        String::from("funct entry() {\n    \n    return(0);\n}")
+        String::from("funct entry() {\n    return(0);\n}\n")
     );
 
     let input_file =

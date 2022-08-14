@@ -9,12 +9,17 @@ pub struct Interpreter {
     variables: std::collections::HashMap<String, Option<token::Token>>,
     functions: std::collections::HashMap<String, Vec<ast::ChildNode>>,
 }
+#[allow(dead_code)]
 impl Interpreter {
     pub fn new() -> Self {
         return Interpreter {
             variables: std::collections::HashMap::new(),
             functions: std::collections::HashMap::new(),
         };
+    }
+
+    pub fn get_functions(&self) -> &std::collections::HashMap<String, Vec<ast::ChildNode>> {
+        return &self.functions;
     }
 
     fn visit_primative(&mut self, ast_ptr: &ast::ASTNode) -> Option<token::Token> {
@@ -100,6 +105,83 @@ impl Interpreter {
         }
     }
 
+    fn visit_function(&mut self, ast_ptr: &ast::ASTNode) -> Option<token::Token> {
+        match ast_ptr.get_operation() {
+            Some(operation) => match self.variables.get(operation.get_data()) {
+                Some(_) => return None,
+                None => match self.functions.get(operation.get_data()){
+                    Some(_) => return None,
+                    None => {
+                        let name = operation.get_data();
+                        self.functions.insert(name.to_string(), ast_ptr.get_children().to_vec());
+                        return Some(operation.clone());
+                    },
+                }
+            },
+            None => return None,
+        }
+    }
+
+    fn visit_call(&mut self, ast_ptr: &ast::ASTNode) -> Option<token::Token> {
+        match ast_ptr.get_operation() {
+            Some(operation) => match &ast_ptr.get_children()[0] {
+                Some(parameters_child) => match parameters_child.get_type() {
+                    ast::ASTNodeType::Parameters => {
+                        let parameters = self.functions.get(operation.get_data()).unwrap()[0].clone().unwrap().get_children().clone();
+                        let previous_variables = self.variables.clone();
+                        for param_num in 0..parameters.len() {
+                            let value = self.visit(
+                                &ast_ptr.get_children()[0].clone().unwrap().get_children()[param_num],
+                            );
+                            self.variables.insert(
+                                parameters[param_num].clone().unwrap().get_operation().clone().unwrap().get_data().to_string(),
+                                value,
+                            );
+                        }
+                        let tok = self.visit(&mut self.functions.get(operation.get_data()).unwrap()[1].clone());
+                        self.variables = previous_variables.clone();
+                        return tok;
+                    },
+                    _ => {
+                        let value = self.visit(&ast_ptr.get_children()[0]);
+                        self.variables.insert(operation.get_data().to_string(), value);
+                        return None;
+                    }
+                },
+                None => return None,
+            },
+            None => return None,
+        }
+    }
+
+    fn visit_block(&mut self, ast_ptr: &ast::ASTNode) -> Option<token::Token> {
+        let mut previous_variables = self.variables.clone();
+        let mut return_value: Option<token::Token> = Some(token::Token::create(
+            token::TokenType::Nil,
+            String::from(""),
+        ));
+
+        for mut child in ast_ptr.get_children() {
+            match self.visit(&mut child) {
+                Some(value) => {
+                    return_value = Some(value);
+                    break;
+                }
+                None => {},
+            }
+        }
+
+        for (key, value) in self.variables.iter() {
+            if previous_variables.contains_key(key) {
+                previous_variables.insert(key.clone(), value.clone());
+            }
+        }
+
+        self.variables = previous_variables.clone();
+        return return_value;
+    }
+
+
     fn visit(&mut self, ast: &ast::ChildNode) -> Option<token::Token> {
         match ast {
             Some(ast_ptr) => {
@@ -108,6 +190,9 @@ impl Interpreter {
                     ast::ASTNodeType::Return => return self.visit_return(ast_ptr),
                     ast::ASTNodeType::Print => return self.visit_print(ast_ptr),
                     ast::ASTNodeType::Declaration => return self.visit_declaration(ast_ptr),
+                    ast::ASTNodeType::Function => return self.visit_function(ast_ptr),
+                    ast::ASTNodeType::Call => return self.visit_call(ast_ptr),
+                    ast::ASTNodeType::Block => return self.visit_block(ast_ptr),
                     _ => {
                         println!("TODO: INTERPRETER -> visit() Some value in match, ASTNodeType not Covered");
                         return None;
