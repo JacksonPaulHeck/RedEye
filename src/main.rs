@@ -116,7 +116,7 @@ fn repl(args: args::Args, output: &mut dyn std::io::Write, input: &mut dyn std::
 }
 
 fn run_interpret(args: &args::Args, parser: parse::Parser) -> i32 {
-    let interpreter: interpret::Interpreter = interpret::Interpreter::new();
+    let mut interpreter: interpret::Interpreter = interpret::Interpreter::new();
     for ast_node in parser.get_ast_nodes() {
         match ast_node.get_type() {
             ast::ASTNodeType::Function | ast::ASTNodeType::Declaration => {
