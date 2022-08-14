@@ -86,7 +86,7 @@ impl Parser {
         return Some(ast::ASTNode::create(
             Vec::new(),
             Some(self.tokens[self.current_node - 1].clone()),
-            ast::ASTNodeType::Empty,
+            ast::ASTNodeType::Primative,
         ));
     }
 
@@ -95,7 +95,7 @@ impl Parser {
         return Some(ast::ASTNode::create(
             Vec::new(),
             Some(self.tokens[self.current_node - 1].clone()),
-            ast::ASTNodeType::Empty,
+            ast::ASTNodeType::Primative,
         ));
     }
 
@@ -104,7 +104,7 @@ impl Parser {
         return Some(ast::ASTNode::create(
             Vec::new(),
             Some(self.tokens[self.current_node - 1].clone()),
-            ast::ASTNodeType::Empty,
+            ast::ASTNodeType::Primative,
         ));
     }
 
@@ -474,7 +474,7 @@ impl Parser {
                         Some(Box::new(ast::ASTNode::create(
                             Vec::new(),
                             token,
-                            ast::ASTNodeType::Empty,
+                            ast::ASTNodeType::Type,
                         ))),
                     ],
                     Some(identifier),
