@@ -32,6 +32,16 @@ impl Interpreter {
     fn visit_return(&self, ast_ptr: &ast::ASTNode) -> Option<token::Token> {
         return self.visit(&ast_ptr.get_children()[0]);
     }
+    
+    fn visit_print(&self, ast_ptr: &ast::ASTNode) -> Option<token::Token> {
+        match self.visit(&ast_ptr.get_children()[0]) {
+            Some(value) => {
+                println!("{}", value.get_data());
+                return ast_ptr.get_operation().clone();
+            },
+            None => return None,
+        }
+    }
 
     fn visit(&self, ast: &ast::ChildNode) -> Option<token::Token> {
         match ast {
@@ -39,6 +49,7 @@ impl Interpreter {
                 match ast_ptr.get_type() {
                     ast::ASTNodeType::Primative => return self.visit_primative(ast_ptr),
                     ast::ASTNodeType::Return => return self.visit_return(ast_ptr),
+                    ast::ASTNodeType::Print => return self.visit_print(ast_ptr),
                     _ => {
                         println!("TODO: INTERPRETER -> visit() Some value in match, ASTNodeType not Covered");
                         return None;

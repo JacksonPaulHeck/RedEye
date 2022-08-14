@@ -247,7 +247,7 @@ impl Parser {
                 return Some(ast::ASTNode::create(
                     vec![Some(Box::new(node_ptr))],
                     Some(token),
-                    ast::ASTNodeType::Unary,
+                    ast::ASTNodeType::Print,
                 ))
             }
             None => return None,
