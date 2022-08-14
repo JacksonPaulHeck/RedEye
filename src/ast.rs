@@ -10,6 +10,7 @@ pub enum ASTNodeType {
     Empty,
     Primative,
     Return,
+    Print,
     Unary,
     Binary,
     Ternary,
