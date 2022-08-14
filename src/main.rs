@@ -120,7 +120,9 @@ fn run_interpret(args: &args::Args, parser: parse::Parser) -> i32 {
     for ast_node in parser.get_ast_nodes() {
         match ast_node.get_type() {
             ast::ASTNodeType::Function | ast::ASTNodeType::Declaration => {
-                return interpreter.interpret(&args, &Some(Box::new(ast_node.clone())));
+                if interpreter.interpret(&args, &Some(Box::new(ast_node.clone()))) == ERROR {
+                    return ERROR;
+                }
             }
             _ => match ast_node.get_operation() {
                 Some(_) => {
@@ -134,7 +136,24 @@ fn run_interpret(args: &args::Args, parser: parse::Parser) -> i32 {
             },
         }
     }
-    return SUCCESS;
+
+    match interpreter.get_functions().get("entry") {
+        Some(entry) => {
+            let entry_function = ast::ASTNode::create(
+                entry.to_vec(),
+                Some(token::Token::create(
+                    token::TokenType::Identifier,
+                    String::from("entry"),
+                )),
+                ast::ASTNodeType::Call,
+            );
+            return interpreter.interpret(&args, &Some(Box::new(entry_function)));
+        },
+        None => {
+            eprintln!("No entry function found");
+            return ERROR;
+        },
+    }
 }
 
 fn run_file(args: args::Args) -> i32 {

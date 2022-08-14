@@ -320,3 +320,270 @@ fn test_interpret_variable() {
     let mut interpreter: Interpreter = Interpreter::new();
     assert_eq!(interpreter.interpret(&args, &ast), ERROR);
 }
+
+#[test]
+fn test_interpret_function() {
+    use crate::args::Args;
+    use crate::ast::ASTNode;
+    use crate::ast::ASTNodeType;
+    use crate::interpret::Interpreter;
+    use crate::token::Token;
+    use crate::token::TokenType;
+    use crate::SUCCESS;
+    use crate::ERROR;
+
+    let args = Args::create(None, false, false, true, false, false);
+    let mut ast = Some(Box::new(ASTNode::create(
+        vec![
+            Some(Box::new(ASTNode::create(
+                vec![],
+                None,
+                ASTNodeType::Parameters,
+            ))),
+            Some(Box::new(ASTNode::create(
+                vec![],
+                None,
+                ASTNodeType::Block,
+            ))),
+        ],
+        Some(Token::create(TokenType::Identifier, String::from("entry"))),
+        ASTNodeType::Function,
+    )));
+    let mut interpreter: Interpreter = Interpreter::new();
+    assert_eq!(interpreter.interpret(&args, &ast), SUCCESS);
+
+
+    ast = Some(Box::new(ASTNode::create(
+        vec![
+            Some(Box::new(ASTNode::create(
+                vec![],
+                Some(Token::create(TokenType::Number, String::from("0"))),
+                ASTNodeType::Primative,
+            ))),
+            Some(Box::new(ASTNode::create(
+                vec![],
+                Some(Token::create(TokenType::Number, String::from("num"))),
+                ASTNodeType::Type,
+            ))),
+        ],
+        Some(Token::create(TokenType::Identifier, String::from("test"))),
+        ASTNodeType::Declaration,
+    )));
+    assert_eq!(interpreter.interpret(&args, &ast), SUCCESS);
+
+    ast = Some(Box::new(ASTNode::create(
+        vec![
+            Some(Box::new(ASTNode::create(
+                vec![],
+                None,
+                ASTNodeType::Parameters,
+            ))),
+            Some(Box::new(ASTNode::create(
+                vec![],
+                None,
+                ASTNodeType::Block,
+            ))),
+        ],
+        Some(Token::create(TokenType::Identifier, String::from("test"))),
+        ASTNodeType::Function,
+    )));
+    assert_eq!(interpreter.interpret(&args, &ast), ERROR);
+
+    interpreter = Interpreter::new();
+
+    ast = Some(Box::new(ASTNode::create(
+        vec![
+            Some(Box::new(ASTNode::create(
+                vec![],
+                None,
+                ASTNodeType::Parameters,
+            ))),
+            Some(Box::new(ASTNode::create(
+                vec![],
+                None,
+                ASTNodeType::Block,
+            ))),
+        ],
+        Some(Token::create(TokenType::Identifier, String::from("test"))),
+        ASTNodeType::Function,
+    )));
+    assert_eq!(interpreter.interpret(&args, &ast), SUCCESS);
+
+    ast = Some(Box::new(ASTNode::create(
+        vec![
+            Some(Box::new(ASTNode::create(
+                vec![],
+                None,
+                ASTNodeType::Parameters,
+            ))),
+        ],
+        Some(Token::create(TokenType::Identifier, String::from("test"))),
+        ASTNodeType::Call,
+    )));
+    assert_eq!(interpreter.interpret(&args, &ast), SUCCESS);
+
+    ast = Some(Box::new(ASTNode::create(
+        vec![
+            Some(Box::new(ASTNode::create(
+                vec![],
+                None,
+                ASTNodeType::Parameters,
+            ))),
+            Some(Box::new(ASTNode::create(
+                vec![],
+                None,
+                ASTNodeType::Block,
+            ))),
+        ],
+        Some(Token::create(TokenType::Identifier, String::from("test"))),
+        ASTNodeType::Function,
+    )));
+    assert_eq!(interpreter.interpret(&args, &ast), ERROR);
+
+    ast = Some(Box::new(ASTNode::create(
+        vec![
+            Some(Box::new(ASTNode::create(
+                vec![],
+                None,
+                ASTNodeType::Parameters,
+            ))),
+            Some(Box::new(ASTNode::create(
+                vec![],
+                None,
+                ASTNodeType::Block,
+            ))),
+        ],
+        None,
+        ASTNodeType::Function,
+    )));
+    assert_eq!(interpreter.interpret(&args, &ast), ERROR);
+
+    interpreter = Interpreter::new();
+
+    ast = Some(Box::new(ASTNode::create(
+        vec![
+            Some(Box::new(ASTNode::create(
+                vec![
+                    Some(Box::new(ASTNode::create(
+                        vec![],
+                        Some(Token::create(TokenType::Identifier, String::from("x"))),
+                        ASTNodeType::Primative,
+                    ))),
+                ],
+                None,
+                ASTNodeType::Parameters,
+            ))),
+            Some(Box::new(ASTNode::create(
+                vec![],
+                None,
+                ASTNodeType::Block,
+            ))),
+        ],
+        Some(Token::create(TokenType::Identifier, String::from("test"))),
+        ASTNodeType::Function,
+    )));
+    assert_eq!(interpreter.interpret(&args, &ast), SUCCESS);
+
+    ast = Some(Box::new(ASTNode::create(
+        vec![
+            Some(Box::new(ASTNode::create(
+                vec![
+                    Some(Box::new(ASTNode::create(
+                        vec![],
+                        Some(Token::create(TokenType::Number, String::from("0"))),
+                        ASTNodeType::Primative,
+                    ))),
+                ],
+                None,
+                ASTNodeType::Parameters,
+            ))),
+        ],
+        Some(Token::create(TokenType::Identifier, String::from("test"))),
+        ASTNodeType::Call,
+    )));
+    assert_eq!(interpreter.interpret(&args, &ast), SUCCESS);
+
+    ast = Some(Box::new(ASTNode::create(
+        vec![
+            Some(Box::new(ASTNode::create(
+                vec![
+                    Some(Box::new(ASTNode::create(
+                        vec![],
+                        Some(Token::create(TokenType::Number, String::from("0"))),
+                        ASTNodeType::Primative,
+                    ))),
+                ],
+                None,
+                ASTNodeType::Block,
+            ))),
+        ],
+        Some(Token::create(TokenType::Identifier, String::from("test"))),
+        ASTNodeType::Call,
+    )));
+    assert_eq!(interpreter.interpret(&args, &ast), ERROR);
+
+    ast = Some(Box::new(ASTNode::create(
+        vec![None],
+        Some(Token::create(TokenType::Identifier, String::from("test"))),
+        ASTNodeType::Call,
+    )));
+    assert_eq!(interpreter.interpret(&args, &ast), ERROR);
+
+    ast = Some(Box::new(ASTNode::create(
+        vec![],
+        None,
+        ASTNodeType::Call,
+    )));
+    assert_eq!(interpreter.interpret(&args, &ast), ERROR);
+
+    interpreter = Interpreter::new();
+
+    ast = Some(Box::new(ASTNode::create(
+        vec![
+            Some(Box::new(ASTNode::create(
+                vec![
+                    Some(Box::new(ASTNode::create(
+                        vec![],
+                        Some(Token::create(TokenType::Identifier, String::from("x"))),
+                        ASTNodeType::Primative,
+                    ))),
+                ],
+                None,
+                ASTNodeType::Parameters,
+            ))),
+            Some(Box::new(ASTNode::create(
+                vec![
+                    Some(Box::new(ASTNode::create(
+                        vec![],
+                        Some(Token::create(TokenType::Error, String::from("error"))),
+                        ASTNodeType::Primative,
+                    ))),
+                ],
+                None,
+                ASTNodeType::Block,
+            ))),
+        ],
+        Some(Token::create(TokenType::Identifier, String::from("test"))),
+        ASTNodeType::Function,
+    )));
+    assert_eq!(interpreter.interpret(&args, &ast), SUCCESS);
+
+    ast = Some(Box::new(ASTNode::create(
+        vec![
+            Some(Box::new(ASTNode::create(
+                vec![
+                    Some(Box::new(ASTNode::create(
+                        vec![],
+                        Some(Token::create(TokenType::Number, String::from("0"))),
+                        ASTNodeType::Primative,
+                    ))),
+                ],
+                None,
+                ASTNodeType::Parameters,
+            ))),
+        ],
+        Some(Token::create(TokenType::Identifier, String::from("test"))),
+        ASTNodeType::Call,
+    )));
+    assert_eq!(interpreter.interpret(&args, &ast), SUCCESS);
+}
