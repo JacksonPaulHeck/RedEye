@@ -23,6 +23,15 @@ impl Interpreter {
                 token::TokenType::Number => return ast_ptr.get_operation().clone(),
                 token::TokenType::String => return ast_ptr.get_operation().clone(),
                 token::TokenType::Boolean => return ast_ptr.get_operation().clone(),
+                token::TokenType::Identifier => match self.variables.get(operation.get_data()){
+                    Some(value) => {
+                        return value.clone();
+                    },
+                    None => {
+                        println!("TODO: INTERPRETER -> visit_declaration() None value");
+                        return None;
+                    },
+                },
                 _ => return None,
             },
             None => return None,

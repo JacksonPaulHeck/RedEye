@@ -100,6 +100,40 @@ fn test_interpret_primative() {
         ASTNodeType::Primative,
     )));
     assert_eq!(interpreter.interpret(&args, &ast), SUCCESS);
+
+    ast = Some(Box::new(ASTNode::create(
+        Vec::new(),
+        Some(Token::create(TokenType::Identifier, String::from("x"))),
+        ASTNodeType::Primative,
+    )));
+    assert_eq!(interpreter.interpret(&args, &ast), ERROR);
+
+    ast = Some(Box::new(ASTNode::create(
+        vec![
+            Some(Box::new(ASTNode::create(
+                vec![],
+                Some(Token::create(TokenType::Number, String::from("0"))),
+                ASTNodeType::Primative,
+            ))),
+            Some(Box::new(ASTNode::create(
+                vec![],
+                Some(Token::create(TokenType::Number, String::from("num"))),
+                ASTNodeType::Type,
+            ))),
+        ],
+        Some(Token::create(TokenType::Identifier, String::from("x"))),
+        ASTNodeType::Declaration,
+    )));
+    let mut interpreter: Interpreter = Interpreter::new();
+    assert_eq!(interpreter.interpret(&args, &ast), SUCCESS);
+
+    ast = Some(Box::new(ASTNode::create(
+        Vec::new(),
+        Some(Token::create(TokenType::Identifier, String::from("x"))),
+        ASTNodeType::Primative,
+    )));
+    assert_eq!(interpreter.interpret(&args, &ast), SUCCESS);
+    
 }
 
 #[test]
