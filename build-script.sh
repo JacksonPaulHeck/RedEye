@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 rustup default nightly
 cargo install grcov
